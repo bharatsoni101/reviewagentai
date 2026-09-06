@@ -1,0 +1,34 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from backend.app.api.v1.router import api_router
+from backend.app.core.config import settings
+from backend.app.db.init_db import initialize_database
+
+app = FastAPI(
+    title="reviewagentai API",
+    version="0.1.0",
+    description="Backend API for the reviewagentai MVP.",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origin_list,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(api_router, prefix="/api/v1")
+
+@app.on_event("startup")
+def startup() -> None:
+    initialize_database()
+
+@app.get("/", tags=["system"])
+def root():
+    return {
+        "application": "reviewagentai",
+        "version": "0.1.0",
+        "status": "running",
+    }
