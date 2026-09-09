@@ -1,0 +1,32 @@
+PHASE 1
+Database Foundation
+       ↓
+PHASE 2
+Backend Foundation
+       ↓
+PHASE 3
+Business & Link Hub
+       ↓
+PHASE 4
+Customer Rating Flow
+       ↓
+PHASE 5
+Negative Feedback Flow
+       ↓
+PHASE 6
+AI Positive Review Flow
+       ↓
+PHASE 7
+Google Review Handoff
+       ↓
+PHASE 8
+NFC + QR Validation
+       ↓
+PHASE 9
+Notifications
+       ↓
+PHASE 10
+Testing + Security + Hardening
+       ↓
+PHASE 11
+Deployment / MVP Release

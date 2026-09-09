@@ -8,7 +8,6 @@ Included:
 - Six initial tables
 - Automatic creation of missing tables
 - Idempotent demo seed data
-- Alembic migration foundation
 - Basic database tests
 
 Run:
@@ -21,4 +20,6 @@ pytest -q
 Default database: `./reviewagentai.db`
 
 The MVP bootstrap uses SQLAlchemy `Base.metadata.create_all()` so missing tables
-are created automatically. Alembic is included for controlled future schema changes.
+are created automatically. using SQLAlchemy's Base.metadata.create_all().
+Or
+Database tables are created automatically when the application starts using SQLAlchemy's Base.metadata.create_all().
