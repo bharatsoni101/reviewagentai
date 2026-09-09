@@ -23,4 +23,5 @@ class PositiveReviewResponse(BaseModel):
     session_id: str
     business_id: str
     rating: int
+    generation_source: str
     reviews: list[GeneratedReviewItem]

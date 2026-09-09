@@ -35,13 +35,19 @@ def test_positive_reviews_fallback_when_groq_fails(monkeypatch):
     monkeypatch.setattr(ai_review_service_module, "Groq", FailingGroq)
     monkeypatch.setattr(ai_review_service_module, "settings", FakeSettings())
 
-    reviews = AIReviewService.generate_reviews(
+    result = AIReviewService.generate_reviews(
         customer_input="Fast and friendly service",
         rating=5,
+        fallback_templates=[
+            "Great experience: {customer_input}",
+            "Really enjoyed it: {customer_input}",
+            "Excellent visit: {customer_input}",
+        ],
     )
 
-    assert len(reviews) == 3
-    assert all(reviews)
+    assert result.source == "fallback"
+    assert len(result.reviews) == 3
+    assert all(result.reviews)
 
 
 def test_private_feedback_is_saved_and_returns_acknowledgement():

@@ -11,6 +11,7 @@ from backend.app.models import (
     ReviewEvent,
     Notification,
     ReviewSession,
+    FallbackReviewComment,
 )
 
 EXPECTED_TABLES = {
@@ -21,6 +22,7 @@ EXPECTED_TABLES = {
     "review_events",
     "notifications",
     "review_sessions",
+    "fallback_review_comments",
 }
 
 def initialize_database() -> None:

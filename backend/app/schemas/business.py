@@ -19,6 +19,7 @@ class BusinessResponse(BaseModel):
     category: str | None
     google_review_url: str
     status: str
+    prefer_ai_comments: bool
     created_at: datetime
     updated_at: datetime
     social_links: list[SocialLinkResponse] = Field(default_factory=list)

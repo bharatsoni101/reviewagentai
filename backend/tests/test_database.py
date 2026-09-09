@@ -2,7 +2,7 @@ from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker
 
 from backend.app.db.base import Base
-from backend.app.models import Business, SocialLink, LocalComplaint
+from backend.app.models import Business, SocialLink, LocalComplaint, FallbackReviewComment
 
 def test_all_phase1_tables_are_created():
     engine = create_engine("sqlite:///:memory:")
@@ -15,6 +15,8 @@ def test_all_phase1_tables_are_created():
         "generated_positive_reviews",
         "review_events",
         "notifications",
+        "review_sessions",
+        "fallback_review_comments",
     }.issubset(tables)
 
 def test_business_to_social_link_relationship():

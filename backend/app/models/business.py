@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import DateTime, Index, String, Text, func
+from sqlalchemy import Boolean, DateTime, Index, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from backend.app.db.base import Base
 
@@ -18,11 +18,16 @@ class Business(Base):
     category: Mapped[str | None] = mapped_column(String(100), nullable=True)
     google_review_url: Mapped[str] = mapped_column(String(2000), nullable=False)
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="ACTIVE", server_default="ACTIVE")
+    # Business preference: True = try Groq AI first; False = use database comments.
+    prefer_ai_comments: Mapped[bool] = mapped_column(
+        "PreferAIComments", Boolean, nullable=False, default=True, server_default="1"
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
 
     social_links = relationship("SocialLink", back_populates="business", cascade="all, delete-orphan")
     complaints = relationship("LocalComplaint", back_populates="business", cascade="all, delete-orphan")
     generated_reviews = relationship("GeneratedPositiveReview", back_populates="business", cascade="all, delete-orphan")
+    fallback_review_comments = relationship("FallbackReviewComment", back_populates="business", cascade="all, delete-orphan")
     review_events = relationship("ReviewEvent", back_populates="business", cascade="all, delete-orphan")
     notifications = relationship("Notification", back_populates="business", cascade="all, delete-orphan")

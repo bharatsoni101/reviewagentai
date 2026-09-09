@@ -126,7 +126,7 @@ def generate_positive_reviews(
     db: Session = Depends(get_db),
 ):
     try:
-        review_session, reviews = (
+        review_session, reviews, generation_source = (
             GeneratedReviewService.generate_positive_reviews(
                 db=db,
                 session_id=session_id,
@@ -164,6 +164,7 @@ def generate_positive_reviews(
         session_id=review_session.id,
         business_id=review_session.business_id,
         rating=review_session.rating,
+        generation_source=generation_source,
         reviews=[
             GeneratedReviewItem(
                 id=review.id,

@@ -1,5 +1,6 @@
 import json
 import logging
+from dataclasses import dataclass
 
 from groq import Groq
 
@@ -8,17 +9,24 @@ from backend.app.core.config import settings
 logger = logging.getLogger(__name__)
 
 
+@dataclass(frozen=True)
+class ReviewGenerationResult:
+    reviews: list[str]
+    source: str  # "groq" or "fallback"
+
+
 class AIReviewService:
-    """Generates customer-facing text using Groq with safe deterministic fallbacks."""
+    """Generate customer-facing review text with Groq and DB-backed fallbacks."""
 
     @staticmethod
-    def _fallback_reviews(customer_input: str) -> list[str]:
+    def _render_fallback_reviews(customer_input: str, fallback_templates: list[str]) -> list[str]:
         text = customer_input.strip().rstrip(".!?")
-        return [
-            f"Great experience! {text}. I would definitely recommend this place.",
-            f"Really enjoyed my experience. {text}. I would be happy to come back again.",
-            f"Excellent experience! {text}. Overall, I would definitely recommend this place.",
-        ]
+        rendered = []
+        for template in fallback_templates:
+            rendered.append(
+                template.replace("{customer_input}", text).strip()
+            )
+        return rendered
 
     @staticmethod
     def _fallback_complaint_acknowledgement() -> str:
@@ -29,13 +37,22 @@ class AIReviewService:
         )
 
     @staticmethod
-    def generate_reviews(customer_input: str, rating: int) -> list[str]:
-        """Return three AI-generated reviews, or safe defaults if AI fails."""
-        fallback = AIReviewService._fallback_reviews(customer_input)
+    def generate_reviews(
+        customer_input: str,
+        rating: int,
+        fallback_templates: list[str],
+    ) -> ReviewGenerationResult:
+        """Return Groq reviews when enabled/available; otherwise DB-backed fallbacks."""
+        if not fallback_templates:
+            raise ValueError("No fallback review comments are configured for this business")
+
+        fallback = AIReviewService._render_fallback_reviews(
+            customer_input, fallback_templates
+        )
 
         if not settings.groq_api_key:
-            logger.warning("Groq API key is not configured; using fallback reviews")
-            return fallback
+            logger.warning("Groq API key is not configured; using database fallback reviews")
+            return ReviewGenerationResult(fallback, "fallback")
 
         system_prompt = """
 You write natural customer reviews for a business.
@@ -90,12 +107,15 @@ Rules:
             if len(cleaned_reviews) != 3 or any(len(review) < 3 for review in cleaned_reviews):
                 raise ValueError("Groq returned invalid review options")
 
-            return cleaned_reviews
+            logger.info("Groq generated 3 positive review options successfully")
+            return ReviewGenerationResult(cleaned_reviews, "groq")
 
         except Exception as exc:
-            # AI is an enhancement, never a dependency for completing the customer flow.
-            logger.warning("Groq review generation failed; using fallback reviews: %s", exc)
-            return fallback
+            # AI is optional. If it fails, always return the business's DB-configured fallback.
+            logger.warning(
+                "Groq review generation failed; using database fallback reviews: %s", exc
+            )
+            return ReviewGenerationResult(fallback, "fallback")
 
     @staticmethod
     def generate_complaint_acknowledgement(customer_input: str) -> str:
