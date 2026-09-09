@@ -20,6 +20,13 @@ class Settings:
         "http://localhost:5173",
     )
 
+    groq_api_key: str | None = os.getenv("GROQ_API_KEY")
+
+    groq_model: str = os.getenv(
+        "GROQ_MODEL",
+        "llama-3.3-70b-versatile",
+    )
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [

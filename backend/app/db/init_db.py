@@ -10,6 +10,7 @@ from backend.app.models import (
     GeneratedPositiveReview,
     ReviewEvent,
     Notification,
+    ReviewSession,
 )
 
 EXPECTED_TABLES = {
@@ -19,6 +20,7 @@ EXPECTED_TABLES = {
     "generated_positive_reviews",
     "review_events",
     "notifications",
+    "review_sessions",
 }
 
 def initialize_database() -> None:

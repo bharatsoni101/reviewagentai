@@ -13,4 +13,5 @@ __all__ = [
     "GeneratedPositiveReview",
     "ReviewEvent",
     "Notification",
+    "ReviewSession",
 ]
