@@ -27,6 +27,8 @@ class Settings:
         "llama-3.3-70b-versatile",
     )
 
+    review_session_timeout_minutes: int = int(os.getenv("REVIEW_SESSION_TIMEOUT_MINUTES", "30"))
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [

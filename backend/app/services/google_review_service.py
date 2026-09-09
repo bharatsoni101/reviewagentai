@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from backend.app.models.business import Business
 from backend.app.models.generated_review import GeneratedPositiveReview
 from backend.app.models.review_session import ReviewSession
+from backend.app.services.review_session_service import ReviewSessionService
 
 
 class GoogleReviewService:
@@ -13,10 +14,7 @@ class GoogleReviewService:
         session_id: str,
         review_id: int,
     ) -> tuple[ReviewSession, GeneratedPositiveReview, Business]:
-        review_session = db.get(ReviewSession, session_id)
-
-        if review_session is None:
-            raise ValueError("Review session not found")
+        review_session = ReviewSessionService.validate_active_session(db, session_id)
 
         if review_session.rating is None:
             raise ValueError("Review session has not been rated")

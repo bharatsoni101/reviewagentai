@@ -35,6 +35,7 @@ from backend.app.schemas.private_feedback import (
     PrivateFeedbackResponse,
 )
 from backend.app.services.private_feedback_service import PrivateFeedbackService
+from backend.app.schemas.review_session_flow import ReviewSessionStatusResponse, ReviewFlowResponse
 
 router = APIRouter(
     prefix="/reviews",
@@ -254,4 +255,78 @@ def select_google_review(
         google_review_url=business.google_review_url,
         status=review_session.status,
         updated_at=review_session.updated_at,
+    )
+
+
+@router.get("/session/{session_id}/status", response_model=ReviewSessionStatusResponse)
+def get_review_session_status(
+    session_id: str,
+    db: Session = Depends(get_db),
+):
+    try:
+        review_session = ReviewSessionService.get_session(db, session_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
+
+    expired = ReviewSessionService.is_expired(review_session)
+    if expired and review_session.status != "expired" and review_session.status not in {"completed"}:
+        review_session.status = "expired"
+        db.commit()
+        db.refresh(review_session)
+
+    return ReviewSessionStatusResponse(
+        session_id=review_session.id,
+        business_id=review_session.business_id,
+        status=review_session.status,
+        rating=review_session.rating,
+        expires_at=ReviewSessionService.expires_at(review_session),
+        expired=review_session.status == "expired",
+    )
+
+
+@router.get("/session/{session_id}/flow", response_model=ReviewFlowResponse)
+def get_review_flow(
+    session_id: str,
+    db: Session = Depends(get_db),
+):
+    try:
+        review_session = ReviewSessionService.get_session(db, session_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
+
+    expired = ReviewSessionService.is_expired(review_session)
+    if expired and review_session.status not in {"completed", "expired"}:
+        review_session.status = "expired"
+        db.commit()
+        db.refresh(review_session)
+
+    try:
+        from backend.app.models.business import Business
+        business = db.get(Business, int(review_session.business_id))
+        if business is None:
+            raise ValueError("Business not found")
+    except (ValueError, TypeError):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Business not found")
+
+    if review_session.status == "expired":
+        next_step = "expired"
+    elif review_session.status == "completed":
+        next_step = "completed"
+    elif review_session.rating is None:
+        next_step = "rate"
+    elif review_session.rating >= 4:
+        next_step = "positive_review"
+    else:
+        next_step = "private_feedback"
+
+    return ReviewFlowResponse(
+        session_id=review_session.id,
+        business_id=review_session.business_id,
+        business_slug=business.slug,
+        business_name=business.name,
+        status=review_session.status,
+        rating=review_session.rating,
+        next_step=next_step,
+        expires_at=ReviewSessionService.expires_at(review_session),
+        expired=review_session.status == "expired",
     )
