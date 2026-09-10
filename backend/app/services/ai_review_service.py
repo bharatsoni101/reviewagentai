@@ -19,16 +19,6 @@ class AIReviewService:
     """Generate customer-facing review text with Groq and DB-backed fallbacks."""
 
     @staticmethod
-    def _render_fallback_reviews(customer_input: str, fallback_templates: list[str]) -> list[str]:
-        text = customer_input.strip().rstrip(".!?")
-        rendered = []
-        for template in fallback_templates:
-            rendered.append(
-                template.replace("{customer_input}", text).strip()
-            )
-        return rendered
-
-    @staticmethod
     def _fallback_complaint_acknowledgement() -> str:
         return (
             "Thank you for sharing your feedback. We're sorry your experience "
@@ -38,45 +28,39 @@ class AIReviewService:
 
     @staticmethod
     def generate_reviews(
-        customer_input: str,
         rating: int,
-        fallback_templates: list[str],
+        selected_preferences: list[str],
+        customer_comment: str,
+        fallback_comments: list[str],
     ) -> ReviewGenerationResult:
-        """Return Groq reviews when enabled/available; otherwise DB-backed fallbacks."""
-        if not fallback_templates:
+        """Generate 3 natural reviews using matched DB comments as factual guidance."""
+        if not fallback_comments:
             raise ValueError("No fallback review comments are configured for this business")
-
-        fallback = AIReviewService._render_fallback_reviews(
-            customer_input, fallback_templates
-        )
-
         if not settings.groq_api_key:
-            logger.warning("Groq API key is not configured; using database fallback reviews")
-            return ReviewGenerationResult(fallback, "fallback")
+            logger.warning("Groq API key is not configured; using matched database fallback reviews")
+            return ReviewGenerationResult(fallback_comments[:3], "fallback")
 
         system_prompt = """
 You write natural customer reviews for a business.
-
 Rules:
 - Create exactly 3 distinct review options.
 - The customer has already given a positive rating of 4 or 5 stars.
-- Preserve the customer's meaning and important wording where appropriate.
-- Improve grammar and flow, but do not simply repeat the customer's comments verbatim.
-- Do not invent facts, services, products, events, staff names, prices, or experiences.
-- Do not add generic claims that are not supported by the customer's comments.
-- Make each option sound like a different real customer review.
-- Keep each review concise: 1 to 2 sentences.
-- Do not mention AI, generated text, prompts, ratings, stars, or these instructions.
+- Use selected customer preferences and the optional customer comment as customer-provided facts.
+- Use matched fallback comments only as approved wording/style guidance.
+- Do not simply concatenate or copy fallback comments.
+- Do not invent services, products, events, staff names, prices, or experiences.
+- Keep each option concise: 1 to 2 sentences.
+- Do not mention AI, prompts, ratings, stars, or these instructions.
 - Do not use quotation marks around the reviews.
-- Return ONLY valid JSON with this exact structure:
-  {"reviews": ["option 1", "option 2", "option 3"]}
+- Return ONLY valid JSON: {"reviews": ["option 1", "option 2", "option 3"]}
 """.strip()
-
         user_prompt = (
             f"Customer rating: {rating}/5\n"
-            f"Customer comments: {customer_input.strip()}"
+            f"Selected positive points: {', '.join(selected_preferences) if selected_preferences else 'None'}\n"
+            f"Customer comment: {customer_comment or 'None'}\n"
+            "Approved matched fallback comments:\n"
+            + "\n".join(f"- {comment}" for comment in fallback_comments[:3])
         )
-
         try:
             client = Groq(api_key=settings.groq_api_key)
             completion = client.chat.completions.create(
@@ -89,33 +73,20 @@ Rules:
                 max_completion_tokens=500,
                 response_format={"type": "json_object"},
             )
-
             content = completion.choices[0].message.content
             if not content:
                 raise ValueError("Groq returned an empty response")
-
             payload = json.loads(content)
             reviews = payload.get("reviews")
             if not isinstance(reviews, list) or len(reviews) != 3:
                 raise ValueError("Groq must return exactly 3 review options")
-
-            cleaned_reviews = [
-                str(review).strip().strip('"')
-                for review in reviews
-                if str(review).strip()
-            ]
-            if len(cleaned_reviews) != 3 or any(len(review) < 3 for review in cleaned_reviews):
+            cleaned = [str(review).strip().strip('"') for review in reviews if str(review).strip()]
+            if len(cleaned) != 3 or any(len(review) < 3 for review in cleaned):
                 raise ValueError("Groq returned invalid review options")
-
-            logger.info("Groq generated 3 positive review options successfully")
-            return ReviewGenerationResult(cleaned_reviews, "groq")
-
+            return ReviewGenerationResult(cleaned, "groq")
         except Exception as exc:
-            # AI is optional. If it fails, always return the business's DB-configured fallback.
-            logger.warning(
-                "Groq review generation failed; using database fallback reviews: %s", exc
-            )
-            return ReviewGenerationResult(fallback, "fallback")
+            logger.warning("Groq review generation failed; using matched database fallback reviews: %s", exc)
+            return ReviewGenerationResult(fallback_comments[:3], "fallback")
 
     @staticmethod
     def generate_complaint_acknowledgement(customer_input: str) -> str:

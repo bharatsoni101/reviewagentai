@@ -35,18 +35,18 @@ DEMO_LINKS = [
     ("LINKEDIN", "https://linkedin.com/", 5),
 ]
 
-# These are database-managed templates, not application hard-coded fallback responses.
-# {customer_input} is replaced with the customer's own words at runtime.
+# Database-managed complete fallback review comments.
+# These comments intentionally contain no runtime placeholders.
 DEFAULT_FALLBACK_COMMENTS = {
     4: [
-        "I had a really good experience. {customer_input}. I would happily recommend this place.",
-        "Really enjoyed my visit. {customer_input}. I would definitely come back again.",
-        "A very positive experience overall. {customer_input}. I would recommend giving this place a try.",
+        "Good overall experience with professional staff and reliable service. The atmosphere was pleasant and the pricing was reasonable.",
+        "A positive experience with helpful staff, dependable service, and a comfortable ambiance. I would be happy to visit again.",
+        "Really enjoyed the visit. The team was courteous, the service was smooth, and the overall atmosphere was welcoming.",
     ],
     5: [
-        "Great experience! {customer_input}. I would definitely recommend this place.",
-        "Really enjoyed my experience. {customer_input}. I would be happy to come back again.",
-        "Excellent experience! {customer_input}. Overall, I would definitely recommend this place.",
+        "Excellent experience with professional and friendly staff. The service was reliable, the ambiance was pleasant, and the pricing felt reasonable. I would definitely recommend this place.",
+        "Really enjoyed my visit. The staff were professional, the service was dependable, and the overall atmosphere was welcoming. Great value for the experience.",
+        "A wonderful experience overall. Everything was handled professionally, the service was smooth, and the ambiance made the visit enjoyable. I would happily come back again.",
     ],
 }
 

@@ -53,17 +53,18 @@ def test_ai_failure_returns_db_fallback_and_source(monkeypatch):
             )
         )
         assert fallback is not None
-        expected_prefix = fallback.comment.split("{customer_input}")[0].strip()
+        expected_comment = fallback.comment
 
     response = client.post(
         f"/api/v1/reviews/session/{session_id}/positive-reviews",
-        json={"customer_input": "Fast service"},
+        json={"reliable_service": True},
     )
     assert response.status_code == 200
     body = response.json()
     assert body["generation_source"] == "fallback"
     assert len(body["reviews"]) == 3
-    assert body["reviews"][0]["generated_review"].startswith(expected_prefix)
+    assert body["selected_preferences"] == ["Reliable Service"]
+    assert body["reviews"][0]["generated_review"] == expected_comment
 
 
 def test_business_can_prefer_database_comments_without_calling_groq(monkeypatch):
@@ -81,7 +82,7 @@ def test_business_can_prefer_database_comments_without_calling_groq(monkeypatch)
     session_id = _new_session("abc-restaurant", 5)
     response = client.post(
         f"/api/v1/reviews/session/{session_id}/positive-reviews",
-        json={"customer_input": "Great food"},
+        json={"good_ambiance": True, "customer_comment": "Great food"},
     )
     assert response.status_code == 200
     body = response.json()

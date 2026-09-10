@@ -36,12 +36,13 @@ def test_positive_reviews_fallback_when_groq_fails(monkeypatch):
     monkeypatch.setattr(ai_review_service_module, "settings", FakeSettings())
 
     result = AIReviewService.generate_reviews(
-        customer_input="Fast and friendly service",
         rating=5,
-        fallback_templates=[
-            "Great experience: {customer_input}",
-            "Really enjoyed it: {customer_input}",
-            "Excellent visit: {customer_input}",
+        selected_preferences=["Professional staff", "Reliable Service"],
+        customer_comment="Fast and friendly service",
+        fallback_comments=[
+            "Great experience with professional staff and reliable service.",
+            "Really enjoyed the visit with friendly service.",
+            "Excellent overall experience.",
         ],
     )
 

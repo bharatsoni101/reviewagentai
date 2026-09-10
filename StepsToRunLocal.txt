@@ -1,16 +1,114 @@
-Steps to Run reviewagentai Locally
+reviewagentai - Steps to Run Locally
 ===================================
 
-1. Activate Virtual Environment
---------------------------------
+1. Open PowerShell and go to the project folder
+------------------------------------------------
+cd C:\Users\DELL\IdeaProjects\reviewagentai
+
+2. Create the Python virtual environment (.venv)
+--------------------------------------------------
+If .venv does not exist:
+
+python -m venv .venv
+
+3. Activate .venv
+-----------------
 .\.venv\Scripts\Activate.ps1
 
+You should see (.venv) at the beginning of the PowerShell prompt.
 
-2. Run Local Tests
-------------------
+If PowerShell blocks activation, run PowerShell with the appropriate local
+execution policy or activate the environment from VS Code's Python environment selector.
+
+4. Install requirements.txt
+---------------------------
+With (.venv) active:
+
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+5. Add the Groq API key
+-----------------------
+Create or update the .env file in the project root:
+
+APP_ENV=development
+DATABASE_URL=sqlite:///./reviewagentai.db
+CORS_ORIGINS=http://localhost:5173
+GROQ_API_KEY=YOUR_GROQ_API_KEY
+GROQ_MODEL=openai/gpt-oss-120b
+REVIEW_SESSION_TIMEOUT_MINUTES=30
+
+Never commit .env to Git and never share the API key in chat, screenshots, logs,
+or source control.
+
+6. Test the Groq API key and model
+-----------------------------------
+Make sure TestGroq.py is in the project root, then run:
+
+python TestGroq.py
+
+A successful result should contain:
+
+RESULT: SUCCESS - Groq API request completed
+
+If the result is FAILED, read the diagnosis. In particular, a model_not_found
+error means GROQ_MODEL is invalid or unavailable; it does not necessarily mean
+the API key is invalid.
+
+7. Reset the local SQLite database when schema/seed changes are made
+--------------------------------------------------------------------
+reviewagentai does not use Alembic. During development, delete the local DB
+and let the application recreate tables and seed data:
+
+Remove-Item .\reviewagentai.db -ErrorAction SilentlyContinue
+
+8. Start the FastAPI backend
+----------------------------
+uvicorn backend.app.main:app --reload
+
+Backend:
+http://127.0.0.1:8000
+
+Swagger:
+http://127.0.0.1:8000/docs
+
+9. Run tests
+------------
+In a second PowerShell window, activate .venv and run:
+
+cd C:\Users\DELL\IdeaProjects\reviewagentai
+.\.venv\Scripts\Activate.ps1
 pytest -q
 
+10. Positive review API input
+-----------------------------
+POST /api/v1/reviews/session/{session_id}/positive-reviews
 
-3. Run Backend API
-------------------
-uvicorn backend.app.main:app --reload
+At least one checkbox or the customer comment is required.
+
+Example:
+
+{
+  "professional_staff": true,
+  "reliable_service": false,
+  "good_ambiance": true,
+  "affordable_pricing": false,
+  "customer_comment": "Food was fresh and service was quick"
+}
+
+The API searches the business's database fallback review comments and selects
+the top 3 relevant comments. Fallback comments are complete comments and do
+not contain {customer_input} or any other runtime replacement placeholder.
+
+If PreferAIComments is true, Groq uses the selected preferences, optional
+customer comment, and the matched fallback comments to produce 3 natural
+review options. If Groq fails, the top 3 matched database comments are still
+returned with generation_source=fallback.
+
+If PreferAIComments is false, Groq is not called and the top 3 matched database
+comments are returned with generation_source=fallback.
+
+11. Important: restart the backend after .env changes
+------------------------------------------------------
+If GROQ_API_KEY or GROQ_MODEL is changed, stop the running uvicorn process and
+start it again so the application loads the updated environment values.

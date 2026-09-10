@@ -126,13 +126,18 @@ def generate_positive_reviews(
     db: Session = Depends(get_db),
 ):
     try:
-        review_session, reviews, generation_source = (
+        review_session, reviews, generation_result, review_input = (
             GeneratedReviewService.generate_positive_reviews(
                 db=db,
                 session_id=session_id,
-                customer_input=request.customer_input,
+                professional_staff=request.professional_staff,
+                reliable_service=request.reliable_service,
+                good_ambiance=request.good_ambiance,
+                affordable_pricing=request.affordable_pricing,
+                customer_comment=request.customer_comment,
             )
         )
+        generation_source = generation_result.source
 
     except ValueError as exc:
         message = str(exc)
@@ -165,6 +170,8 @@ def generate_positive_reviews(
         business_id=review_session.business_id,
         rating=review_session.rating,
         generation_source=generation_source,
+        selected_preferences=review_input.selected_preferences,
+        customer_comment=review_input.customer_comment or None,
         reviews=[
             GeneratedReviewItem(
                 id=review.id,

@@ -27,7 +27,7 @@ def create_positive_session() -> str:
 def create_generated_review(session_id: str) -> int:
     response = client.post(
         f"/api/v1/reviews/session/{session_id}/positive-reviews",
-        json={"customer_input": "Fast, friendly, and absolutely delicious!"},
+        json={"professional_staff": True, "customer_comment": "Fast, friendly, and absolutely delicious!"},
     )
     assert response.status_code == 200
     return response.json()["reviews"][0]["id"]

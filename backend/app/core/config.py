@@ -24,7 +24,7 @@ class Settings:
 
     groq_model: str = os.getenv(
         "GROQ_MODEL",
-        "llama-3.3-70b-versatile",
+        "openai/gpt-oss-120b",
     )
 
     review_session_timeout_minutes: int = int(os.getenv("REVIEW_SESSION_TIMEOUT_MINUTES", "30"))
