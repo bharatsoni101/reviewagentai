@@ -191,6 +191,7 @@ class GeneratedReviewService:
         reviews = [
             GeneratedPositiveReview(
                 business_id=review_session.business_id,
+                session_id=review_session.id,
                 rating=review_session.rating,
                 customer_input=combined_input,
                 generated_review=generated_review,

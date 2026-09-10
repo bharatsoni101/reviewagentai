@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from backend.app.models.complaint import LocalComplaint
 from backend.app.models.notification import Notification
 from backend.app.models.review_session import ReviewSession
+from backend.app.core.statuses import ReviewSessionStatus
 from backend.app.services.ai_review_service import AIReviewService
 from backend.app.services.review_session_service import ReviewSessionService
 
@@ -48,7 +49,7 @@ class PrivateFeedbackService:
         acknowledgement = AIReviewService.generate_complaint_acknowledgement(comments)
 
         # Mark the review session as completed without adding/changing DB columns.
-        review_session.status = "completed"
+        review_session.status = ReviewSessionStatus.COMPLETED
         db.commit()
         db.refresh(review_session)
 

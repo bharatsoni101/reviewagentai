@@ -2,6 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from backend.app.db.database import get_db
+from backend.app.core.rate_limit import InMemoryRateLimiter
+from backend.app.core.config import settings
+from backend.app.core.statuses import ReviewSessionStatus
+from backend.app.core.errors import api_error
 
 from backend.app.schemas.review_session import (
     ReviewSessionCreate,
@@ -36,6 +40,11 @@ from backend.app.schemas.private_feedback import (
 )
 from backend.app.services.private_feedback_service import PrivateFeedbackService
 from backend.app.schemas.review_session_flow import ReviewSessionStatusResponse, ReviewFlowResponse
+
+ai_rate_limiter = InMemoryRateLimiter(
+    max_requests=settings.ai_rate_limit_requests,
+    window_seconds=settings.ai_rate_limit_window_seconds,
+)
 
 router = APIRouter(
     prefix="/reviews",
@@ -102,9 +111,9 @@ def rate_review_session(
         )
 
     if request.rating >= 4:
-        next_step = "positive_review"
+        next_step = ReviewSessionStatus.POSITIVE_REVIEW
     else:
-        next_step = "private_feedback"
+        next_step = ReviewSessionStatus.PRIVATE_FEEDBACK
 
     return ReviewRatingResponse(
         session_id=review_session.id,
@@ -123,8 +132,19 @@ def rate_review_session(
 def generate_positive_reviews(
     session_id: str,
     request: PositiveReviewRequest,
+    http_request: Request,
     db: Session = Depends(get_db),
 ):
+    client_host = http_request.client.host if http_request.client else "unknown"
+    rate_key = client_host
+    if not ai_rate_limiter.allow(rate_key):
+        raise api_error(
+            status.HTTP_429_TOO_MANY_REQUESTS,
+            "Too many AI review generation requests. Please try again shortly.",
+            "AI_RATE_LIMITED",
+            {"Retry-After": str(settings.ai_rate_limit_window_seconds)},
+        )
+
     try:
         review_session, reviews, generation_result, review_input = (
             GeneratedReviewService.generate_positive_reviews(
@@ -285,8 +305,8 @@ def get_review_session_status(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
 
     expired = ReviewSessionService.is_expired(review_session)
-    if expired and review_session.status != "expired" and review_session.status not in {"completed"}:
-        review_session.status = "expired"
+    if expired and review_session.status != ReviewSessionStatus.EXPIRED and review_session.status not in {ReviewSessionStatus.COMPLETED}:
+        review_session.status = ReviewSessionStatus.EXPIRED
         db.commit()
         db.refresh(review_session)
 
@@ -296,7 +316,7 @@ def get_review_session_status(
         status=review_session.status,
         rating=review_session.rating,
         expires_at=ReviewSessionService.expires_at(review_session),
-        expired=review_session.status == "expired",
+        expired=review_session.status == ReviewSessionStatus.EXPIRED,
     )
 
 
@@ -311,8 +331,8 @@ def get_review_flow(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(exc))
 
     expired = ReviewSessionService.is_expired(review_session)
-    if expired and review_session.status not in {"completed", "expired"}:
-        review_session.status = "expired"
+    if expired and review_session.status not in {ReviewSessionStatus.COMPLETED, ReviewSessionStatus.EXPIRED}:
+        review_session.status = ReviewSessionStatus.EXPIRED
         db.commit()
         db.refresh(review_session)
 
@@ -324,16 +344,16 @@ def get_review_flow(
     except (ValueError, TypeError):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Business not found")
 
-    if review_session.status == "expired":
-        next_step = "expired"
-    elif review_session.status == "completed":
-        next_step = "completed"
+    if review_session.status == ReviewSessionStatus.EXPIRED:
+        next_step = ReviewSessionStatus.EXPIRED
+    elif review_session.status == ReviewSessionStatus.COMPLETED:
+        next_step = ReviewSessionStatus.COMPLETED
     elif review_session.rating is None:
-        next_step = "rate"
+        next_step = ReviewSessionStatus.RATE
     elif review_session.rating >= 4:
-        next_step = "positive_review"
+        next_step = ReviewSessionStatus.POSITIVE_REVIEW
     else:
-        next_step = "private_feedback"
+        next_step = ReviewSessionStatus.PRIVATE_FEEDBACK
 
     return ReviewFlowResponse(
         session_id=review_session.id,
@@ -344,5 +364,5 @@ def get_review_flow(
         rating=review_session.rating,
         next_step=next_step,
         expires_at=ReviewSessionService.expires_at(review_session),
-        expired=review_session.status == "expired",
+        expired=review_session.status == ReviewSessionStatus.EXPIRED,
     )

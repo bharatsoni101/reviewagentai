@@ -4,6 +4,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from backend.app.core.config import settings
+from backend.app.core.statuses import ReviewSessionStatus
 from backend.app.models.business import Business
 from backend.app.models.review_session import ReviewSession
 
@@ -18,7 +19,7 @@ class ReviewSessionService:
         if business.status != "ACTIVE":
             raise ValueError("Business is not active")
 
-        review_session = ReviewSession(business_id=business.id, status="started")
+        review_session = ReviewSession(business_id=business.id, status=ReviewSessionStatus.STARTED)
         db.add(review_session)
         db.commit()
         db.refresh(review_session)
@@ -40,17 +41,17 @@ class ReviewSessionService:
 
     @classmethod
     def is_expired(cls, review_session: ReviewSession) -> bool:
-        if review_session.status in {"completed", "expired"}:
-            return review_session.status == "expired"
+        if review_session.status in {ReviewSessionStatus.COMPLETED, ReviewSessionStatus.EXPIRED}:
+            return review_session.status == ReviewSessionStatus.EXPIRED
         return datetime.now(timezone.utc) >= cls.expires_at(review_session)
 
     @classmethod
     def validate_active_session(cls, db: Session, session_id: str) -> ReviewSession:
         review_session = cls.get_session(db, session_id)
-        if review_session.status == "expired":
+        if review_session.status == ReviewSessionStatus.EXPIRED:
             raise ValueError("Review session has expired")
         if cls.is_expired(review_session):
-            review_session.status = "expired"
+            review_session.status = ReviewSessionStatus.EXPIRED
             db.commit()
             db.refresh(review_session)
             raise ValueError("Review session has expired")
@@ -60,11 +61,11 @@ class ReviewSessionService:
     def rate_session(cls, db: Session, session_id: str, rating: int) -> ReviewSession:
         review_session = cls.validate_active_session(db, session_id)
 
-        if review_session.status != "started":
+        if review_session.status != ReviewSessionStatus.STARTED:
             raise ValueError("Review session has already been rated")
 
         review_session.rating = rating
-        review_session.status = "rated"
+        review_session.status = ReviewSessionStatus.RATED
         db.commit()
         db.refresh(review_session)
         return review_session

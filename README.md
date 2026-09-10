@@ -173,3 +173,20 @@ The `businesses` table stores two Google review URLs:
 The Google review selection endpoint detects the request `User-Agent`. Desktop/laptop browsers receive the PC URL. Mobile phones and tablets receive the mobile URL. Unknown or missing User-Agent values default to the mobile URL. The response also includes `google_review_url` as the selected URL and `device_type` as `desktop` or `mobile`.
 
 The seeded `reviewagentai` mobile review URL is `https://g.page/r/CQXyLImX75mfEBM/review`.
+
+## Phase 3.12 Backend Hardening
+
+The backend now includes a small pre-frontend hardening pass:
+
+- Generated positive reviews are linked to their `review_session`, preventing cross-session review selection.
+- Google handoff keeps the PC/mobile/tablet URL routing already implemented. Only one generated review can be selected per session.
+- Review session statuses are centralized in `backend/app/core/statuses.py`.
+- API errors include both the existing `detail` field and a stable `code` field. Validation errors use `VALIDATION_ERROR`.
+- Positive-review generation has an in-memory MVP rate limit. Configure `AI_RATE_LIMIT_REQUESTS` and `AI_RATE_LIMIT_WINDOW_SECONDS`.
+- Requests receive an `X-Request-ID` and safe request logging records method/path/status/duration without request bodies or secrets.
+- CORS credentials are disabled automatically when wildcard origins are configured.
+- Database check constraints/indexes protect ratings and speed session review lookups.
+
+### Important after this schema change
+
+Because this project intentionally does not use Alembic, delete `reviewagentai.db` once after installing this version and restart the backend so SQLite is recreated with the new `session_id` column and constraints.

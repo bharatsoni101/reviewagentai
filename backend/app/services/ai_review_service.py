@@ -2,7 +2,10 @@ import json
 import logging
 from dataclasses import dataclass
 
-from groq import Groq
+try:
+    from groq import Groq
+except ImportError:  # Allows the backend test suite to run before dependencies are installed.
+    Groq = None
 
 from backend.app.core.config import settings
 
@@ -36,8 +39,8 @@ class AIReviewService:
         """Generate 3 natural reviews using matched DB comments as factual guidance."""
         if not fallback_comments:
             raise ValueError("No fallback review comments are configured for this business")
-        if not settings.groq_api_key:
-            logger.warning("Groq API key is not configured; using matched database fallback reviews")
+        if not settings.groq_api_key or Groq is None:
+            logger.warning("Groq is unavailable or not configured; using matched database fallback reviews")
             return ReviewGenerationResult(fallback_comments[:3], "fallback")
 
         system_prompt = """
@@ -93,9 +96,9 @@ Rules:
         """Generate a private-feedback acknowledgement, with a safe fallback."""
         fallback = AIReviewService._fallback_complaint_acknowledgement()
 
-        if not settings.groq_api_key:
+        if not settings.groq_api_key or Groq is None:
             logger.warning(
-                "Groq API key is not configured; using fallback complaint acknowledgement"
+                "Groq is unavailable or not configured; using fallback complaint acknowledgement"
             )
             return fallback
 

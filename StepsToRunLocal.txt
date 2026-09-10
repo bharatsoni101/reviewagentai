@@ -158,3 +158,21 @@ Remove-Item .\reviewagentai.db -ErrorAction SilentlyContinue
 
 Then restart the backend so Base.metadata.create_all() recreates the database
 and the seed data creates the new PC/mobile Google review URL columns.
+
+
+PHASE 3.12 BACKEND HARDENING
+=============================
+This version adds session ownership for generated reviews, standardized API error codes, safe request IDs/logging, CORS checks, AI rate limiting, and database constraints/indexes.
+
+Because this project does NOT use Alembic, reset the SQLite database once after replacing the code:
+Remove-Item .\reviewagentai.db -ErrorAction SilentlyContinue
+
+Then start the backend:
+uvicorn backend.app.main:app --reload
+
+AI rate-limit settings in .env are optional:
+AI_RATE_LIMIT_REQUESTS=10
+AI_RATE_LIMIT_WINDOW_SECONDS=60
+
+Run the full test suite:
+pytest -q
