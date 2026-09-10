@@ -16,7 +16,8 @@ class Business(Base):
     logo_url: Mapped[str | None] = mapped_column(String(1000), nullable=True)
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
     category: Mapped[str | None] = mapped_column(String(100), nullable=True)
-    google_review_url: Mapped[str] = mapped_column(String(2000), nullable=False)
+    google_review_pc_url: Mapped[str] = mapped_column(String(2000), nullable=False)
+    google_review_mob_url: Mapped[str] = mapped_column(String(2000), nullable=False)
     status: Mapped[str] = mapped_column(String(20), nullable=False, default="ACTIVE", server_default="ACTIVE")
     # Business preference: True = try Groq AI first; False = use database comments.
     prefer_ai_comments: Mapped[bool] = mapped_column(

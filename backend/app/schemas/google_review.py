@@ -13,6 +13,9 @@ class GoogleReviewSelectionResponse(BaseModel):
     rating: int
     selected_review_id: int
     review_text: str
+    google_review_pc_url: str
+    google_review_mob_url: str
     google_review_url: str
+    device_type: str
     status: str
     updated_at: datetime

@@ -112,3 +112,49 @@ comments are returned with generation_source=fallback.
 ------------------------------------------------------
 If GROQ_API_KEY or GROQ_MODEL is changed, stop the running uvicorn process and
 start it again so the application loads the updated environment values.
+
+11. Google Review PC/Mobile/Tablet URL behavior
+------------------------------------------------
+The Business table now stores two Google review URLs:
+
+- google_review_pc_url  -> desktop/laptop browsers
+- google_review_mob_url -> mobile phones and tablets
+
+For the seeded reviewagentai business, the mobile URL is:
+https://g.page/r/CQXyLImX75mfEBM/review
+
+The Google review selection API detects the browser User-Agent:
+
+Desktop / laptop:
+    returns google_review_pc_url
+
+Mobile phone:
+    returns google_review_mob_url
+
+Tablet (iPad / Android tablet):
+    returns google_review_mob_url
+
+Unknown or missing User-Agent:
+    defaults to google_review_mob_url
+
+The API response also includes the configured PC/mobile URLs, the selected
+review URL, and device_type.
+
+Example desktop test header in Swagger/API client:
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/140.0 Safari/537.36
+
+Example mobile test header:
+User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1
+
+Example tablet test header:
+User-Agent: Mozilla/5.0 (Linux; Android 14; SM-X800) AppleWebKit/537.36 Chrome/140 Safari/537.36
+
+12. Important: reset database after Google URL schema changes
+--------------------------------------------------------------
+Because reviewagentai does not use Alembic, delete the local SQLite database
+when applying this schema change:
+
+Remove-Item .\reviewagentai.db -ErrorAction SilentlyContinue
+
+Then restart the backend so Base.metadata.create_all() recreates the database
+and the seed data creates the new PC/mobile Google review URL columns.

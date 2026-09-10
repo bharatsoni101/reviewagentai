@@ -11,7 +11,8 @@ REVIEWAGENTAI_BUSINESS = {
     "logo_url": "/logos/reviewagentai.jpg",
     "description": "ReviewAgentAI is an AI-powered platform that helps businesses generate authentic customer reviews and feedback. Our advanced AI algorithms analyze customer interactions and provide valuable insights to improve your business reputation and customer satisfaction.",
     "category": "AI & Technology",
-    "google_review_url": "https://search.google.com/local/writereview?placeid=ChIJV0S728r9YjkRBfIuWZfvmZ8",
+    "google_review_pc_url": "https://search.google.com/local/writereview?placeid=ChIJV0S728r9YjkRBfIuWZfvmZ8",
+    "google_review_mob_url": "https://g.page/r/CQXyLImX75mfEBM/review",
     "status": "ACTIVE",
     "prefer_ai_comments": True,
 }
@@ -22,7 +23,8 @@ LEGACY_DEMO_BUSINESS = {
     "logo_url": "",
     "description": "Great food. Great service. Always here for you.",
     "category": "Restaurant",
-    "google_review_url": "https://search.google.com/local/writereview?placeid=REPLACE_ME",
+    "google_review_pc_url": "https://search.google.com/local/writereview?placeid=REPLACE_ME",
+    "google_review_mob_url": "https://g.page/r/CQXyLImX75mfEBM/review",
     "status": "ACTIVE",
     "prefer_ai_comments": False,
 }

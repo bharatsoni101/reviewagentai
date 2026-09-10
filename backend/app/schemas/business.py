@@ -17,7 +17,8 @@ class BusinessResponse(BaseModel):
     logo_url: str | None
     description: str | None
     category: str | None
-    google_review_url: str
+    google_review_pc_url: str
+    google_review_mob_url: str
     status: str
     prefer_ai_comments: bool
     created_at: datetime

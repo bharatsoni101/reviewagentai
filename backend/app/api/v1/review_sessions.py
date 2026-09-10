@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from backend.app.db.database import get_db
@@ -232,6 +232,7 @@ def submit_private_feedback(
 def select_google_review(
     session_id: str,
     request: SelectReviewRequest,
+    http_request: Request,
     db: Session = Depends(get_db),
 ):
     try:
@@ -254,13 +255,20 @@ def select_google_review(
             detail=message,
         )
 
+    review_url, device_type = GoogleReviewService.get_review_url(
+        business, http_request.headers.get("user-agent")
+    )
+
     return GoogleReviewSelectionResponse(
         session_id=review_session.id,
         business_id=review_session.business_id,
         rating=review_session.rating,
         selected_review_id=review.id,
         review_text=review.generated_review,
-        google_review_url=business.google_review_url,
+        google_review_pc_url=business.google_review_pc_url,
+        google_review_mob_url=business.google_review_mob_url,
+        google_review_url=review_url,
+        device_type=device_type,
         status=review_session.status,
         updated_at=review_session.updated_at,
     )

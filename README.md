@@ -161,3 +161,15 @@ POST /api/v1/reviews/session/{session_id}/positive-reviews
 ```
 
 For `reviewagentai`, `prefer_ai_comments=true`, so a successful Groq request should return `generation_source="groq"`. To test the fallback path, temporarily set the business's `PreferAIComments` value to false or simulate a Groq failure; the frontend must still receive three review comments with `generation_source="fallback"`.
+
+
+## Google Review PC/Mobile URL Routing
+
+The `businesses` table stores two Google review URLs:
+
+- `google_review_pc_url` — desktop/laptop browser URL.
+- `google_review_mob_url` — mobile phone/tablet browser URL.
+
+The Google review selection endpoint detects the request `User-Agent`. Desktop/laptop browsers receive the PC URL. Mobile phones and tablets receive the mobile URL. Unknown or missing User-Agent values default to the mobile URL. The response also includes `google_review_url` as the selected URL and `device_type` as `desktop` or `mobile`.
+
+The seeded `reviewagentai` mobile review URL is `https://g.page/r/CQXyLImX75mfEBM/review`.

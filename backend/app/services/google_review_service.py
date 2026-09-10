@@ -5,6 +5,7 @@ from backend.app.models.business import Business
 from backend.app.models.generated_review import GeneratedPositiveReview
 from backend.app.models.review_session import ReviewSession
 from backend.app.services.review_session_service import ReviewSessionService
+from backend.app.services.device_detection import get_google_review_url
 
 
 class GoogleReviewService:
@@ -43,8 +44,11 @@ class GoogleReviewService:
         if business.status != "ACTIVE":
             raise ValueError("Business is not active")
 
-        if not business.google_review_url:
-            raise ValueError("Google review URL is not configured")
+        if not business.google_review_pc_url:
+            raise ValueError("Google PC review URL is not configured")
+
+        if not business.google_review_mob_url:
+            raise ValueError("Google mobile review URL is not configured")
 
         review.selected = True
         review_session.status = "completed"
@@ -53,6 +57,11 @@ class GoogleReviewService:
         db.refresh(review_session)
 
         return review_session, review, business
+
+
+    @staticmethod
+    def get_review_url(business: Business, user_agent: str | None) -> tuple[str, str]:
+        return get_google_review_url(business, user_agent)
 
 
 def _business_id_as_int(business_id: str) -> int:

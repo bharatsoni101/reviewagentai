@@ -40,6 +40,7 @@ def test_select_generated_review_returns_google_url():
     response = client.post(
         f"/api/v1/reviews/session/{session_id}/google-review/select",
         json={"review_id": review_id},
+        headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/140.0.0.0 Safari/537.36"},
     )
 
     assert response.status_code == 200
@@ -48,9 +49,12 @@ def test_select_generated_review_returns_google_url():
     assert body["selected_review_id"] == review_id
     assert body["rating"] == 5
     assert body["review_text"]
-    assert body["google_review_url"].startswith(
+    assert body["google_review_pc_url"].startswith(
         "https://search.google.com/local/writereview?placeid="
     )
+    assert body["google_review_mob_url"] == "https://g.page/r/CQXyLImX75mfEBM/review"
+    assert body["google_review_url"] == body["google_review_pc_url"]
+    assert body["device_type"] == "desktop"
     assert body["status"] == "completed"
 
     with SessionLocal() as db:

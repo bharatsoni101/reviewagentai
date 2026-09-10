@@ -30,7 +30,8 @@ def test_business_to_social_link_relationship():
             name="Test Business",
             description="Test",
             category="Restaurant",
-            google_review_url="https://example.com/google-review",
+            google_review_pc_url="https://example.com/google-review",
+            google_review_mob_url="https://example.com/google-review-mobile",
         )
         business.social_links.append(
             SocialLink(
@@ -55,7 +56,8 @@ def test_database_can_store_complaint():
         business = Business(
             slug="complaint-business",
             name="Complaint Business",
-            google_review_url="https://example.com/google-review",
+            google_review_pc_url="https://example.com/google-review",
+            google_review_mob_url="https://example.com/google-review-mobile",
         )
         db.add(business)
         db.flush()

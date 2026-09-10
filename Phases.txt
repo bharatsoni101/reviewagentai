@@ -1,32 +1,259 @@
-PHASE 1
-Database Foundation
-       ↓
-PHASE 2
-Backend Foundation
-       ↓
-PHASE 3
-Business & Link Hub
-       ↓
-PHASE 4
-Customer Rating Flow
-       ↓
-PHASE 5
-Negative Feedback Flow
-       ↓
-PHASE 6
-AI Positive Review Flow
-       ↓
-PHASE 7
-Google Review Handoff
-       ↓
-PHASE 8
-NFC + QR Validation
-       ↓
-PHASE 9
-Notifications
-       ↓
-PHASE 10
-Testing + Security + Hardening
-       ↓
-PHASE 11
-Deployment / MVP Release
+reviewagentai - IMPLEMENTATION PHASES
+====================================
+
+PHASE 1 - DATABASE FOUNDATION
+------------------------------
+1.1 Project structure and Python package foundation
+1.2 SQLAlchemy Base and database engine setup
+1.3 SQLite local database configuration
+1.4 Automatic table creation with Base.metadata.create_all()
+1.5 Database session management / get_db dependency
+1.6 Initial Business table
+1.7 Initial SocialLink table
+1.8 Initial LocalComplaint table
+1.9 Initial GeneratedPositiveReview table
+1.10 Initial ReviewEvent table
+1.11 Initial Notification table
+1.12 Initial ReviewSession table
+1.13 Database initialization validation
+1.14 Seed data foundation
+1.15 Development rule: no Alembic; recreate SQLite DB for schema changes
+
+PHASE 2 - BACKEND FOUNDATION
+----------------------------
+2.1 FastAPI application setup
+2.2 API v1 router structure
+2.3 Environment configuration using .env
+2.4 CORS configuration
+2.5 Health endpoint
+2.6 Business lookup foundation
+2.7 API error handling and validation
+2.8 TestClient / pytest foundation
+2.9 Local Uvicorn startup flow
+
+PHASE 3 - BUSINESS, REVIEW ENGINE & CUSTOMER FLOW
+-------------------------------------------------
+3.1 Business API and BusinessResponse
+    - Business slug lookup
+    - Active business validation
+    - Social-link response
+
+3.2 Review Session foundation
+    - Create review session
+    - UUID session ID
+    - Session status
+    - Rating field
+    - Session timestamps
+
+3.3 Positive Review Flow foundation
+    - GeneratedPositiveReview table
+    - Positive-review request/response schemas
+    - Positive-review API endpoint
+
+3.3.1 Positive Review fallback foundation
+    - Database-managed fallback_review_comments table
+    - Complete fallback comments without runtime placeholders
+    - Fallback comment seeding
+    - Fallback comment cleanup/idempotency
+
+3.3.2 Groq AI Review Generation
+    - Groq SDK integration
+    - GROQ_API_KEY configuration
+    - GROQ_MODEL configuration
+    - AI review generation
+    - Safe fallback when Groq is unavailable
+    - generation_source = groq / fallback
+
+3.3.3 AI Preference Per Business
+    - PreferAIComments Boolean business column
+    - AI-first mode
+    - Database-fallback-only mode
+    - Groq failure fallback behavior
+
+3.3.4 Positive Review Input Improvement
+    - Professional staff checkbox
+    - Reliable Service checkbox
+    - Good Ambiance checkbox
+    - Affordable Pricing checkbox
+    - Optional customer comment
+    - At least one checkbox/comment validation
+    - Relevance matching against fallback_review_comments
+    - Top 3 fallback matches
+    - Groq uses selected preferences and matched comments as context
+
+3.4 Private Complaint Flow
+    - 1-3 rating validation
+    - Local complaint storage
+    - Notification creation
+    - AI acknowledgement with deterministic fallback
+    - Session completion
+
+3.5 Google Review Handoff
+    - Select generated review
+    - Validate business and rating ownership
+    - Validate active business
+    - Validate Google review configuration
+    - Mark selected review
+    - Complete review session
+
+3.5.1 Google Review PC/Mobile URL Configuration
+    - Rename businesses.google_review_url to google_review_pc_url
+    - Add google_review_mob_url
+    - Seed PC review URL
+    - Seed mobile review URL
+    - Expose both configured URLs in Business API
+
+3.5.2 Device-Aware Google Review URL Routing
+    - Desktop/laptop -> google_review_pc_url
+    - Mobile phone -> google_review_mob_url
+    - Tablet -> google_review_mob_url
+    - Unknown/missing User-Agent -> google_review_mob_url
+    - User-Agent based device detection
+    - Return selected google_review_url in Google handoff response
+    - Return device_type for transparency/debugging
+
+3.6 Social Links & Event Tracking
+    - Review event model
+    - Landing page events
+    - Rating selected events
+    - AI generation events
+    - Private feedback events
+    - Review selected events
+    - Google handoff events
+    - Social link click events
+
+3.7 NFC + QR Customer Access
+    - NFC access source
+    - QR access source
+    - Direct access source
+    - Active business validation
+    - Session creation
+    - Landing-page event tracking
+
+3.8 Analytics
+    - Business analytics endpoint
+    - Configurable 1-365 day range
+    - Event aggregation
+    - Rating metrics
+
+3.9 Dashboard
+    - Business dashboard endpoint
+    - Review funnel metrics
+    - Positive/negative review metrics
+    - Social click metrics
+
+3.10 Session Timeout
+    - Configurable session timeout
+    - Active session validation
+    - Automatic expiration state
+    - Expiration checks across review actions
+
+3.11 Session Status & Flow APIs
+    - Session status endpoint
+    - Session flow endpoint
+    - Current step calculation
+    - Completed/expired handling
+
+PHASE 4 - FRONTEND CUSTOMER EXPERIENCE
+--------------------------------------
+4.1 React + Vite SPA foundation
+4.2 Tailwind CSS setup
+4.3 Business landing page
+4.4 NFC/QR customer entry page
+4.5 Business branding and social links
+4.6 Star rating UI
+4.7 Positive review checkbox UI
+4.8 Optional customer comment input
+4.9 Positive review option cards
+4.10 Review selection UI
+4.11 Private feedback UI for 1-3 stars
+4.12 Loading/error/empty states
+4.13 Mobile-first responsive layout
+
+PHASE 5 - NEGATIVE FEEDBACK EXPERIENCE
+--------------------------------------
+5.1 Private feedback form
+5.2 Complaint submission API integration
+5.3 Confirmation / acknowledgement UI
+5.4 Business notification status handling
+5.5 Ensure 1-3 star customers are not sent to Google
+5.6 Validation and abuse-resistant form behavior
+
+PHASE 6 - AI POSITIVE REVIEW EXPERIENCE
+---------------------------------------
+6.1 Groq configuration UI/backend configuration
+6.2 AI review generation request
+6.3 Three review options display
+6.4 AI/fallback generation source handling
+6.5 Business PreferAIComments behavior
+6.6 AI failure fallback behavior
+6.7 Customer edit/select experience
+6.8 Preserve customer-authored facts; no fabricated experiences
+6.9 Explicit customer selection before Google handoff
+
+PHASE 7 - GOOGLE REVIEW HANDOFF
+-------------------------------
+7.1 Google review URL configuration
+7.2 PC/mobile URL storage
+7.3 Device detection
+7.4 Desktop/laptop routing
+7.5 Mobile/tablet routing
+7.6 Unknown-device mobile default
+7.7 Copy final review text
+7.8 Copy & Open Google action
+7.9 Never automatically submit a Google review
+7.10 Google handoff event tracking
+7.11 Mobile browser behavior and clipboard fallback
+
+PHASE 8 - NFC + QR PRODUCTION VALIDATION
+----------------------------------------
+8.1 Business-specific access URL
+8.2 NFC tap flow validation
+8.3 QR scan flow validation
+8.4 Access source tracking
+8.5 Invalid/inactive business handling
+8.6 Session creation from access
+8.7 Landing page event tracking
+
+PHASE 9 - NOTIFICATIONS
+------------------------
+9.1 Private feedback notification creation
+9.2 Notification status lifecycle
+9.3 Business notification retrieval foundation
+9.4 Email notification integration (future)
+9.5 Notification retry/error handling
+
+PHASE 10 - TESTING, SECURITY & HARDENING
+----------------------------------------
+10.1 Unit tests
+10.2 API integration tests
+10.3 Database tests
+10.4 Seed idempotency tests
+10.5 Positive-review input validation tests
+10.6 Groq success/failure tests
+10.7 Fallback relevance tests
+10.8 PreferAIComments tests
+10.9 Google PC/mobile/tablet routing tests
+10.10 Unknown User-Agent default tests
+10.11 Session expiration tests
+10.12 CORS and request validation
+10.13 Secret/API-key protection
+10.14 Logging without exposing secrets
+10.15 Error handling and HTTP status validation
+10.16 Regression test suite
+10.17 Performance and basic abuse protection
+
+PHASE 11 - DEPLOYMENT / MVP RELEASE
+-----------------------------------
+11.1 Production environment configuration
+11.2 Production database configuration
+11.3 Secret management
+11.4 Groq production configuration
+11.5 Frontend build
+11.6 Backend deployment
+11.7 HTTPS configuration
+11.8 Production logging/monitoring
+11.9 Backup and recovery plan
+11.10 NFC/QR production URLs
+11.11 Production smoke tests
+11.12 MVP release checklist
