@@ -190,3 +190,25 @@ The backend now includes a small pre-frontend hardening pass:
 ### Important after this schema change
 
 Because this project intentionally does not use Alembic, delete `reviewagentai.db` once after installing this version and restart the backend so SQLite is recreated with the new `session_id` column and constraints.
+
+## Phase 4.2 Frontend Customer Landing Page
+
+The React/Vite frontend now includes a customer landing page at `/r/{business_slug}`. It creates a customer access session using `POST /api/v1/access/{slug}` and loads the complete business profile using `GET /api/v1/businesses/{slug}`.
+
+The landing page displays the business logo/name, category, description, a customer feedback CTA, and enabled social links. Social link clicks are tracked through the existing social-click endpoint while the external social destination still opens normally if tracking fails.
+
+Supported source query values are `nfc`, `qr`, and `direct`. The default is `direct`.
+
+### Phase 4.2 frontend setup
+
+```powershell
+cd .\frontend
+npm install
+npm run dev
+```
+
+Then open `http://localhost:5173/r/reviewagentai`.
+
+The frontend API base URL defaults to `http://127.0.0.1:8000` and can be changed with `frontend/.env` using `VITE_API_BASE_URL`.
+
+The star-rating screen is intentionally reserved for Phase 4.3.
