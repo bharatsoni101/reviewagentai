@@ -5,6 +5,10 @@ from pydantic import BaseModel, Field
 
 class SelectReviewRequest(BaseModel):
     review_id: int = Field(..., gt=0, description="ID of the generated review to select")
+    final_review_text: str | None = Field(
+        default=None, min_length=3, max_length=2000,
+        description="Optional customer-edited final review text",
+    )
 
 
 class GoogleReviewSelectionResponse(BaseModel):

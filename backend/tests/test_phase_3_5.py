@@ -101,3 +101,21 @@ def test_select_generated_review_rejects_review_from_other_business_or_rating():
     )
     assert response.status_code == 404
     assert response.json()["detail"] == "Generated review not found"
+
+
+def test_select_generated_review_accepts_customer_edited_text():
+    session_id = create_positive_session()
+    review_id = create_generated_review(session_id)
+
+    final_text = "The team was professional and the service was excellent. I would happily return."
+    response = client.post(
+        f"/api/v1/reviews/session/{session_id}/google-review/select",
+        json={"review_id": review_id, "final_review_text": final_text},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["review_text"] == final_text
+
+    with SessionLocal() as db:
+        review = db.get(GeneratedPositiveReview, review_id)
+        assert review.generated_review == final_text

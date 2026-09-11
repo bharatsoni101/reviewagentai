@@ -260,6 +260,7 @@ def select_google_review(
             db=db,
             session_id=session_id,
             review_id=request.review_id,
+            final_review_text=request.final_review_text,
         )
     except ValueError as exc:
         message = str(exc)

@@ -191,24 +191,24 @@ The backend now includes a small pre-frontend hardening pass:
 
 Because this project intentionally does not use Alembic, delete `reviewagentai.db` once after installing this version and restart the backend so SQLite is recreated with the new `session_id` column and constraints.
 
-## Phase 4.2 Frontend Customer Landing Page
+## Phase 4.3-4.13 Customer Frontend
 
-The React/Vite frontend now includes a customer landing page at `/r/{business_slug}`. It creates a customer access session using `POST /api/v1/access/{slug}` and loads the complete business profile using `GET /api/v1/businesses/{slug}`.
+The React frontend now implements the customer-facing review journey through Phase 4.13. It includes the business landing page, NFC/QR/direct entry handling, business branding and social links, 1-5 star rating, positive-review preference checkboxes and optional comment, generated review cards with customer editing/selection, private feedback for 1-3 stars, loading/error/empty/retry/expired states, clipboard fallback, Copy & Open Google, and mobile-first responsive behavior.
 
-The landing page displays the business logo/name, category, description, a customer feedback CTA, and enabled social links. Social link clicks are tracked through the existing social-click endpoint while the external social destination still opens normally if tracking fails.
-
-Supported source query values are `nfc`, `qr`, and `direct`. The default is `direct`.
-
-### Phase 4.2 frontend setup
+Run the frontend from the `frontend` directory:
 
 ```powershell
-cd .\frontend
 npm install
 npm run dev
 ```
 
-Then open `http://localhost:5173/r/reviewagentai`.
+Open `http://localhost:5173/r/reviewagentai` after the FastAPI backend is running on `http://127.0.0.1:8000`.
 
-The frontend API base URL defaults to `http://127.0.0.1:8000` and can be changed with `frontend/.env` using `VITE_API_BASE_URL`.
+Frontend validation commands:
 
-The star-rating screen is intentionally reserved for Phase 4.3.
+```powershell
+npm test
+npm run build
+```
+
+Google review text is never submitted automatically. The selected final text is copied first, then the device-appropriate Google review URL returned by the backend is opened.

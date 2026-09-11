@@ -176,3 +176,62 @@ AI_RATE_LIMIT_WINDOW_SECONDS=60
 
 Run the full test suite:
 pytest -q
+
+PHASE 4.3-4.13 FRONTEND TESTING
+
+1. Backend terminal
+   cd C:\Users\DELL\IdeaProjects\reviewagentai
+   .\.venv\Scripts\Activate.ps1
+   uvicorn backend.app.main:app --reload
+
+2. Frontend terminal
+   cd C:\Users\DELL\IdeaProjects\reviewagentai\frontend
+   npm install
+   npm run dev
+
+3. Open the customer experience
+   http://localhost:5173/r/reviewagentai
+
+4. NFC test
+   http://localhost:5173/r/reviewagentai?source=nfc
+
+5. QR test
+   http://localhost:5173/r/reviewagentai?source=qr
+
+6. Positive flow test
+   Landing -> Share your experience -> 4 or 5 stars -> choose at least one preference and/or comment -> Create review suggestions -> edit/select a suggestion -> Copy & Open Google. Confirm the text is copied and Google opens. The app must not submit the Google review automatically.
+
+7. Negative/private flow test
+   Landing -> Share your experience -> 1, 2, or 3 stars -> enter at least 3 characters -> Send private feedback -> confirm the acknowledgement/success screen. Confirm no Google page is opened.
+
+8. Validation tests
+   Try creating positive suggestions with no checkbox and no comment. The UI must block submission. Try empty private feedback. The UI must block submission.
+
+9. Error tests
+   Open http://localhost:5173/r/not-a-real-business and confirm a friendly error with Try again. Stop the backend and reload a customer page to verify the network error state.
+
+10. Session/resume test
+   Start a flow, refresh the page, and confirm the active session resumes from its backend flow status instead of creating an unnecessary new session.
+
+11. Expired-session test
+   If a session is expired by backend timeout, reload and confirm the UI asks the customer to start again.
+
+12. Social test
+   Click each enabled social link. The external page should open and the SOCIAL_LINK_CLICKED event should be attempted in the background.
+
+13. Responsive test
+   Use Chrome DevTools device emulation for iPhone/Android/tablet and desktop. Confirm buttons are easy to tap, cards fit the screen, textareas are usable, and no horizontal scrolling occurs.
+
+14. Clipboard failure test
+   In a browser/privacy context where clipboard access is denied, Copy & Open Google must show a manual-copy message and must not open Google.
+
+15. Frontend tests
+   cd C:\Users\DELL\IdeaProjects\reviewagentai\frontend
+   npm test
+
+16. Frontend production build
+   npm run build
+
+17. Backend regression test
+   cd C:\Users\DELL\IdeaProjects\reviewagentai
+   pytest -q

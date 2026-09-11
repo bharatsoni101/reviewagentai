@@ -15,6 +15,7 @@ class GoogleReviewService:
         db: Session,
         session_id: str,
         review_id: int,
+        final_review_text: str | None = None,
     ) -> tuple[ReviewSession, GeneratedPositiveReview, Business]:
         review_session = ReviewSessionService.validate_active_session(db, session_id)
 
@@ -52,6 +53,12 @@ class GoogleReviewService:
 
         if not business.google_review_mob_url:
             raise ValueError("Google mobile review URL is not configured")
+
+        if final_review_text is not None:
+            final_review_text = final_review_text.strip()
+            if len(final_review_text) < 3:
+                raise ValueError("Final review text must contain at least 3 characters")
+            review.generated_review = final_review_text
 
         # Only one review can be the final selection for a session.
         db.query(GeneratedPositiveReview).filter(
