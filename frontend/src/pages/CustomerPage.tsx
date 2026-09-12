@@ -322,7 +322,7 @@ export function CustomerPage() {
                         type="checkbox"
                         checked={preferences[key]}
                         onChange={(event) => setPreferences((current) => ({ ...current, [key]: event.target.checked }))}
-                        className="mt-1 h-5 w-5 rounded border-slate-300 text-slate-950 focus:ring-slate-300"
+                        className="ra-checkbox mt-1 h-5 w-5 rounded text-slate-950 focus:ring-slate-300"
                       />
                       <span>
                         <span className="block font-semibold text-slate-900">{label}</span>
@@ -340,7 +340,7 @@ export function CustomerPage() {
                   rows={4}
                   maxLength={1000}
                   placeholder="Add a few words in your own voice…"
-                  className="mt-2 w-full resize-none rounded-2xl border border-slate-200 px-4 py-3 text-sm leading-6 outline-none transition focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
+                  className="ra-textarea mt-2 w-full resize-none px-4 py-3 text-sm leading-6 outline-none transition"
                 />
                 <span className="mt-1 block text-right text-xs text-slate-400">{customerComment.length}/1000</span>
               </label>
@@ -366,7 +366,7 @@ export function CustomerPage() {
                   return (
                     <article key={review.id} className={`rounded-3xl border bg-white p-5 shadow-sm transition sm:p-6 ${selected ? 'border-indigo-300 bg-indigo-50/30 ring-4 ring-indigo-100' : 'border-slate-200'}`}>
                       <div className="flex items-center justify-between gap-3">
-                        <button type="button" onClick={() => setSelectedReviewId(review.id)} className="ra-button ra-button-secondary min-h-10 gap-3 px-3 text-left">
+                        <button type="button" onClick={() => setSelectedReviewId(review.id)} className={`ra-button min-h-10 gap-3 px-3 text-left ${selected ? 'ra-button-selected' : 'ra-button-secondary'}`}>
                           <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs ${selected ? 'bg-slate-950 text-white' : 'bg-slate-100 text-slate-500'}`}>{index + 1}</span>
                           {selected ? 'Selected review' : 'Select this review'}
                         </button>
@@ -378,7 +378,7 @@ export function CustomerPage() {
                         rows={5}
                         maxLength={2000}
                         aria-label={`Review suggestion ${index + 1}`}
-                        className="mt-4 w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm leading-7 outline-none focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
+                        className="ra-textarea mt-4 w-full resize-none bg-slate-50 px-4 py-3 text-sm leading-7 outline-none"
                       />
                     </article>
                   )
@@ -409,7 +409,7 @@ export function CustomerPage() {
               rows={7}
               maxLength={2000}
               placeholder="Please tell us what happened or what you would like the business to improve…"
-              className="mt-2 w-full resize-none rounded-2xl border border-slate-200 px-4 py-3 text-sm leading-7 outline-none focus:border-slate-400 focus:ring-4 focus:ring-slate-100"
+              className="ra-textarea mt-2 w-full resize-none px-4 py-3 text-sm leading-7 outline-none"
             />
             <span className="mt-1 block text-right text-xs text-slate-400">{privateComment.length}/2000</span>
           </label>

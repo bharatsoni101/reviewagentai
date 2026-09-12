@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 export function AppShell({ children, businessName }: { children: ReactNode; businessName?: string }) {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-slate-50 text-slate-950">
+    <div className="ra-app-shell min-h-screen overflow-x-hidden text-slate-950">
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur-xl">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4 sm:px-6">
           <div className="flex items-center gap-3">
@@ -21,7 +21,7 @@ export function AppShell({ children, businessName }: { children: ReactNode; busi
           )}
         </div>
       </header>
-      <main className="relative mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
+      <main className="ra-app-main relative mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
         <div className="pointer-events-none absolute -left-24 top-10 h-48 w-48 rounded-full bg-indigo-300/20 blur-3xl" aria-hidden="true" />
         <div className="pointer-events-none absolute -right-24 top-40 h-56 w-56 rounded-full bg-lime-200/30 blur-3xl" aria-hidden="true" />
         <div className="relative">{children}</div>

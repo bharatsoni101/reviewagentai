@@ -5,7 +5,7 @@ const moods = ['😞', '😕', '😐', '🙂', '🤩']
 export function RatingStars({ value, onChange, disabled }: Props) {
   return (
     <div className="mx-auto w-fit" role="radiogroup" aria-label="Choose a rating from 1 to 5">
-      <div className="flex justify-center gap-1.5 sm:gap-2">
+      <div className="ra-star-group flex justify-center gap-1.5 sm:gap-2" role="group" aria-label="Star rating">
         {[1, 2, 3, 4, 5].map((rating) => {
           const active = value !== null && rating <= value
           return (

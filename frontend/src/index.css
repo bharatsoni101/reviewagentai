@@ -147,3 +147,62 @@ button { -webkit-tap-highlight-color: transparent; }
 .ra-social-linkedin { background: #0a66c2; border-radius: 7px; }
 .ra-social-x { background: #000; }
 .ra-social-default { background: #4f46e5; }
+
+
+/* Premium light-blue mountain atmosphere — visual only, no customer-flow changes. */
+.ra-app-shell {
+  background: #eaf6ff url('/mountain-bg.svg') center top / cover fixed no-repeat;
+}
+.ra-app-main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.34));
+}
+.ra-app-main > .relative { position: relative; z-index: 1; }
+
+.ra-card,
+.ra-app-shell .rounded-3xl.border,
+.ra-app-shell .rounded-3xl.border-slate-200 {
+  border-color: rgba(125, 177, 214, .48) !important;
+  box-shadow: 0 22px 55px rgba(43, 92, 125, .13), 0 0 0 1px rgba(255,255,255,.58) inset;
+}
+
+.ra-star-group {
+  width: fit-content;
+  margin-inline: auto;
+  padding: .55rem;
+  border: 1px solid rgba(93, 157, 207, .62);
+  border-radius: 1.25rem;
+  background: rgba(255,255,255,.58);
+  box-shadow: 0 12px 30px rgba(64, 122, 162, .10);
+}
+
+.ra-checkbox {
+  accent-color: #4f46e5;
+  border: 2px solid #8fb6d3 !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.8) inset;
+}
+.ra-checkbox:focus { outline: none; box-shadow: 0 0 0 4px rgba(79,70,229,.12); }
+
+.ra-textarea {
+  border: 1px solid #9fc3de !important;
+  border-radius: 1rem;
+  background-color: rgba(255,255,255,.86);
+  box-shadow: 0 4px 14px rgba(51, 91, 120, .05) inset;
+}
+.ra-textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 4px rgba(99,102,241,.11);
+}
+
+.ra-button-selected {
+  color: #fff;
+  background: linear-gradient(135deg, #0f9f8f 0%, #0b7f73 100%);
+  border: 1px solid #0b7f73;
+  box-shadow: 0 10px 22px rgba(15, 159, 143, .24);
+}
+.ra-button-selected:hover:not(:disabled) {
+  background: linear-gradient(135deg, #12b3a0 0%, #0a756b 100%);
+}
