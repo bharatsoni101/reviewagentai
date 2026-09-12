@@ -273,7 +273,7 @@ export function CustomerPage() {
             <p className="mt-5 text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">{business.category || 'Business'}</p>
             <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-4xl">{business.name}</h1>
             {business.description && <p className="mx-auto mt-4 max-w-xl text-base leading-7 text-slate-600">{business.description}</p>}
-            <button onClick={startRating} className="mt-8 w-full rounded-2xl bg-slate-950 px-6 py-4 text-base font-bold text-white shadow-lg transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-200 sm:w-auto sm:min-w-64">
+            <button onClick={startRating} className="ra-button ra-button-primary mt-8 w-full sm:w-auto sm:min-w-64">
               Share your experience
             </button>
           </div>
@@ -332,7 +332,7 @@ export function CustomerPage() {
                 />
                 <span className="mt-1 block text-right text-xs text-slate-400">{customerComment.length}/1000</span>
               </label>
-              <button disabled={busy} onClick={() => void generateReviews()} className="mt-5 w-full rounded-2xl bg-slate-950 px-6 py-4 font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50">
+              <button disabled={busy} onClick={() => void generateReviews()} className="ra-button ra-button-primary mt-5 w-full">
                 {busy ? 'Creating review suggestions…' : 'Create review suggestions'}
               </button>
             </div>
@@ -344,7 +344,7 @@ export function CustomerPage() {
                     <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Your {rating}/5 review</p>
                     <h1 className="mt-2 text-3xl font-extrabold tracking-tight">Choose your favorite version</h1>
                   </div>
-                  <button type="button" onClick={() => setReviews([])} className="text-left text-sm font-semibold text-slate-600 underline underline-offset-4 hover:text-slate-950">Change my input</button>
+                  <button type="button" onClick={() => setReviews([])} className="ra-button ra-button-secondary min-h-10 px-4 text-xs">Change my input</button>
                 </div>
                 <p className="mt-3 text-sm leading-6 text-slate-600">You can edit any suggestion. Select the version that feels most like your experience.</p>
               </div>
@@ -354,7 +354,7 @@ export function CustomerPage() {
                   return (
                     <article key={review.id} className={`rounded-3xl border bg-white p-5 shadow-sm transition sm:p-6 ${selected ? 'border-indigo-300 bg-indigo-50/30 ring-4 ring-indigo-100' : 'border-slate-200'}`}>
                       <div className="flex items-center justify-between gap-3">
-                        <button type="button" onClick={() => setSelectedReviewId(review.id)} className="flex items-center gap-3 text-left font-semibold">
+                        <button type="button" onClick={() => setSelectedReviewId(review.id)} className="ra-button ra-button-secondary min-h-10 gap-3 px-3 text-left">
                           <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs ${selected ? 'bg-slate-950 text-white' : 'bg-slate-100 text-slate-500'}`}>{index + 1}</span>
                           {selected ? 'Selected review' : 'Select this review'}
                         </button>
@@ -373,7 +373,7 @@ export function CustomerPage() {
                 })}
               </div>
               <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-soft sm:p-6">
-                <button disabled={busy || !selectedReview?.generated_review.trim()} onClick={() => void copyAndOpenGoogle()} className="w-full rounded-2xl bg-slate-950 px-6 py-4 font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50">
+                <button disabled={busy || !selectedReview?.generated_review.trim()} onClick={() => void copyAndOpenGoogle()} className="ra-button ra-button-primary w-full">
                   {busy ? 'Preparing Google…' : 'Copy & Open Google'}
                 </button>
                 <p className="mt-3 text-center text-xs leading-5 text-slate-500">Your review is never submitted automatically. Google will open after your text is copied.</p>
@@ -401,7 +401,7 @@ export function CustomerPage() {
             />
             <span className="mt-1 block text-right text-xs text-slate-400">{privateComment.length}/2000</span>
           </label>
-          <button disabled={busy} onClick={() => void submitPrivateFeedback()} className="mt-5 w-full rounded-2xl bg-slate-950 px-6 py-4 font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-50">
+          <button disabled={busy} onClick={() => void submitPrivateFeedback()} className="ra-button ra-button-primary mt-5 w-full">
             {busy ? 'Sending privately…' : 'Send private feedback'}
           </button>
           <p className="mt-3 text-center text-xs text-slate-500">Rating: {rating}/5</p>
@@ -413,7 +413,7 @@ export function CustomerPage() {
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-2xl text-emerald-700">✓</div>
           <h1 className="mt-5 text-3xl font-extrabold tracking-tight">Thank you!</h1>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-slate-600">{successMessage || 'Thanks for sharing your experience.'}</p>
-          <button onClick={restart} className="mt-7 rounded-2xl border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-slate-800 hover:bg-slate-50">Start a new review</button>
+          <button onClick={restart} className="ra-button ra-button-secondary mt-7">Start a new review</button>
         </section>
       )}
 
@@ -421,7 +421,7 @@ export function CustomerPage() {
         <section className="ra-card p-7 text-center sm:p-10">
           <h1 className="text-3xl font-extrabold tracking-tight">This session has expired</h1>
           <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-slate-600">For your security, review sessions are temporary. Start a new session to continue.</p>
-          <button onClick={restart} className="mt-7 rounded-2xl bg-slate-950 px-6 py-3 text-sm font-bold text-white hover:bg-slate-800">Start again</button>
+          <button onClick={restart} className="ra-button ra-button-primary mt-7">Start again</button>
         </section>
       )}
     </AppShell>

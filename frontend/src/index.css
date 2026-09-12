@@ -4,21 +4,21 @@
 
 :root {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #0b1736;
-  background: #f5f7fb;
+  color: #111827;
+  background: #f3f4f6;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  --ra-navy: #0b1736;
-  --ra-indigo: #4338ca;
-  --ra-blue: #2563eb;
-  --ra-purple: #7c3aed;
-  --ra-muted: #64748b;
-  --ra-border: #e2e8f0;
+  --ra-ink: #111827;
+  --ra-ink-soft: #374151;
+  --ra-muted: #6b7280;
+  --ra-border: #e5e7eb;
   --ra-surface: #ffffff;
-  --ra-page: #f5f7fb;
-  --ra-soft-indigo: #eef2ff;
-  --ra-soft-blue: #eff6ff;
-  --ra-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  --ra-page: #f3f4f6;
+  --ra-accent: #4f46e5;
+  --ra-accent-dark: #3730a3;
+  --ra-accent-soft: #eef2ff;
+  --ra-lime: #d9f99d;
+  --ra-shadow: 0 22px 55px rgba(17, 24, 39, 0.10);
 }
 
 * { box-sizing: border-box; }
@@ -28,75 +28,97 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 8% 0%, rgba(99, 102, 241, 0.10), transparent 28rem),
-    radial-gradient(circle at 92% 12%, rgba(59, 130, 246, 0.08), transparent 26rem),
-    var(--ra-page);
+    radial-gradient(circle at 5% -5%, rgba(79, 70, 229, 0.16), transparent 28rem),
+    radial-gradient(circle at 100% 8%, rgba(217, 249, 157, 0.24), transparent 24rem),
+    linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
 }
 button, input, textarea { font: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
 
-/* Option 1 — Modern SaaS / Premium design system */
+/* Option 4 — Bold & Modern */
 .bg-slate-50 { background-color: var(--ra-page) !important; }
 .bg-white { background-color: var(--ra-surface) !important; }
-.bg-slate-950 { background-color: var(--ra-navy) !important; }
-.text-slate-950 { color: var(--ra-navy) !important; }
-.text-slate-900 { color: #14213d !important; }
-.text-slate-800 { color: #253451 !important; }
-.text-slate-700 { color: #3b4a66 !important; }
+.bg-slate-950 { background-color: var(--ra-ink) !important; }
+.text-slate-950 { color: var(--ra-ink) !important; }
+.text-slate-900 { color: #1f2937 !important; }
+.text-slate-800 { color: #374151 !important; }
+.text-slate-700 { color: #4b5563 !important; }
 .text-slate-600 { color: var(--ra-muted) !important; }
-.text-slate-500 { color: #7b879d !important; }
-.text-slate-400 { color: #94a3b8 !important; }
+.text-slate-500 { color: #9ca3af !important; }
+.text-slate-400 { color: #9ca3af !important; }
 .border-slate-200 { border-color: var(--ra-border) !important; }
-.border-slate-300 { border-color: #cbd5e1 !important; }
-.bg-slate-100 { background-color: #f1f5f9 !important; }
-.bg-slate-50\/50 { background-color: rgba(248, 250, 252, 0.7) !important; }
-.hover\:bg-slate-800:hover { background-color: #1e2a49 !important; }
-.hover\:bg-slate-50:hover { background-color: #f8fafc !important; }
-.hover\:border-slate-300:hover { border-color: #cbd5e1 !important; }
-.focus\:ring-slate-200:focus { --tw-ring-color: rgba(99, 102, 241, 0.20) !important; }
-.focus\:ring-slate-100:focus { --tw-ring-color: rgba(99, 102, 241, 0.12) !important; }
-.focus\:border-slate-400:focus { border-color: #818cf8 !important; }
-
-/* Make primary actions feel branded without changing component behavior. */
-button.bg-slate-950,
-a.bg-slate-950 {
-  background: linear-gradient(135deg, var(--ra-navy), #312e81) !important;
-  box-shadow: 0 12px 24px rgba(49, 46, 129, 0.20);
-}
-button.bg-slate-950:hover,
-a.bg-slate-950:hover {
-  background: linear-gradient(135deg, #111d42, var(--ra-indigo)) !important;
-  transform: translateY(-1px);
-}
-
+.border-slate-300 { border-color: #d1d5db !important; }
+.bg-slate-100 { background-color: #f3f4f6 !important; }
+.bg-slate-50\/50 { background-color: rgba(249, 250, 251, 0.82) !important; }
+.hover\:bg-slate-800:hover { background-color: #1f2937 !important; }
+.hover\:bg-slate-50:hover { background-color: #f9fafb !important; }
+.hover\:border-slate-300:hover { border-color: #9ca3af !important; }
+.focus\:ring-slate-200:focus { --tw-ring-color: rgba(79, 70, 229, 0.22) !important; }
+.focus\:ring-slate-100:focus { --tw-ring-color: rgba(79, 70, 229, 0.14) !important; }
+.focus\:border-slate-400:focus { border-color: #6366f1 !important; }
 .shadow-soft { box-shadow: var(--ra-shadow) !important; }
 
 @layer components {
   .ra-card {
-    @apply rounded-[20px] border border-slate-200 bg-white shadow-soft;
+    @apply rounded-[24px] border bg-white;
+    border-color: var(--ra-border);
+    box-shadow: var(--ra-shadow);
   }
+
   .ra-eyebrow {
-    @apply text-xs font-bold uppercase tracking-[0.18em] text-indigo-500;
+    @apply text-[11px] font-black uppercase tracking-[0.2em];
+    color: var(--ra-accent);
   }
-  .ra-primary-button {
-    @apply rounded-2xl bg-slate-950 px-6 py-4 font-bold text-white transition duration-200;
-    box-shadow: 0 12px 24px rgba(49, 46, 129, 0.20);
+
+  .ra-button {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-black transition duration-200 focus:outline-none focus:ring-4 disabled:cursor-not-allowed disabled:opacity-50;
+    letter-spacing: -0.01em;
   }
-  .ra-primary-button:hover { transform: translateY(-1px); }
-  .ra-primary-button:disabled { transform: none; }
-  .ra-secondary-button {
-    @apply rounded-2xl border border-slate-200 bg-white px-6 py-3 font-bold text-slate-800 transition duration-200;
+  .ra-button:hover:not(:disabled) { transform: translateY(-2px); }
+  .ra-button:active:not(:disabled) { transform: translateY(0) scale(0.99); }
+  .ra-button-primary {
+    @apply text-white;
+    background: linear-gradient(135deg, #111827 0%, #312e81 100%);
+    box-shadow: 0 14px 28px rgba(49, 46, 129, 0.24);
   }
-  .ra-secondary-button:hover { @apply bg-slate-50; transform: translateY(-1px); }
+  .ra-button-primary:hover:not(:disabled) { background: linear-gradient(135deg, #1f2937 0%, #4338ca 100%); }
+  .ra-button-secondary {
+    @apply border bg-white;
+    border-color: #d1d5db;
+    color: var(--ra-ink);
+    box-shadow: 0 8px 18px rgba(17, 24, 39, 0.06);
+  }
+  .ra-button-secondary:hover:not(:disabled) { @apply bg-slate-50; border-color: #9ca3af; }
+  .ra-button-danger { @apply bg-red-600 text-white; box-shadow: 0 12px 24px rgba(220,38,38,.18); }
+  .ra-button-success { @apply text-slate-950; background: var(--ra-lime); box-shadow: 0 12px 24px rgba(101,163,13,.18); }
+  .ra-button:focus-visible { --tw-ring-color: rgba(99, 102, 241, 0.22); }
+
   .ra-input {
-    @apply rounded-2xl border border-slate-200 bg-white outline-none transition duration-200;
+    @apply rounded-2xl border bg-white outline-none transition duration-200;
+    border-color: var(--ra-border);
   }
   .ra-input:focus {
-    border-color: #818cf8;
-    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.10);
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+.ra-star-button { border-color: #e5e7eb; background: #fff; box-shadow: 0 8px 18px rgba(17,24,39,.06); }
+.ra-star-button:hover:not(:disabled) { border-color: #c7d2fe; background: #eef2ff; }
+
+@layer components {
+  .ra-card { position: relative; overflow: hidden; }
+  .ra-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #111827 0%, #4f46e5 55%, #a3e635 100%);
+  }
 }

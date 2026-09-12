@@ -107,7 +107,7 @@ export function CustomerLandingPage() {
           <p className="mt-3 text-slate-600">{error || 'The business link may be invalid or unavailable.'}</p>
           <button
             onClick={() => window.location.reload()}
-            className="mt-6 min-h-12 rounded-xl bg-slate-950 px-5 font-semibold text-white hover:bg-slate-800"
+            className="ra-button ra-button-primary mt-6"
           >
             Try again
           </button>
@@ -150,13 +150,13 @@ export function CustomerLandingPage() {
               <button
                 type="button"
                 onClick={() => navigate(`/r/${encodeURIComponent(business.slug)}/rating?session_id=${encodeURIComponent(access?.session_id ?? '')}`)}
-                className="min-h-14 rounded-xl bg-slate-950 px-6 font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-800"
+                className="ra-button ra-button-primary min-h-14 w-full"
               >
                 Share your experience
               </button>
               <a
                 href="#social"
-                className="flex min-h-14 items-center justify-center rounded-xl border border-slate-300 px-6 font-bold text-slate-900 transition hover:bg-slate-50"
+                className="ra-button ra-button-secondary min-h-14 w-full"
               >
                 Connect with us
               </a>
@@ -179,7 +179,7 @@ export function CustomerLandingPage() {
                   target="_blank"
                   rel="noreferrer"
                   onClick={() => void handleSocialClick(link.id)}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 shadow-sm hover:bg-slate-50"
+                  className="ra-button ra-button-secondary min-h-11 px-4"
                 >
                   <span>{platformLabel(link.platform)}</span>
                   {socialLoadingId === link.id && <span className="text-xs text-slate-400">…</span>}

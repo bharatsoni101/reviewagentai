@@ -13,7 +13,7 @@ export function HomePage() {
         </p>
         <Link
           to="/r/reviewagentai"
-          className="mt-7 inline-flex min-h-12 items-center justify-center rounded-xl bg-slate-950 px-5 font-semibold text-white transition hover:bg-slate-800"
+          className="ra-button ra-button-primary mt-7"
         >
           Open demo business
         </Link>

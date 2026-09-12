@@ -7,9 +7,9 @@ from backend.app.models.social_link import SocialLink
 
 REVIEWAGENTAI_BUSINESS = {
     "slug": "reviewagentai",
-    "name": "ReviewAgentAI",
-    "logo_url": "/logos/reviewagentai.jpg",
-    "description": "ReviewAgentAI is an AI-powered platform that helps businesses generate authentic customer reviews and feedback. Our advanced AI algorithms analyze customer interactions and provide valuable insights to improve your business reputation and customer satisfaction.",
+    "name": "Review Agent AI",
+    "logo_url": "/public/logos/reviewagentai.jpg",
+    "description": "Review Agent AI is an AI-powered platform that helps businesses generate authentic customer reviews and feedback. Our advanced AI algorithms analyze customer interactions and provide valuable insights to improve your business reputation and customer satisfaction.",
     "category": "AI & Technology",
     "google_review_pc_url": "https://search.google.com/local/writereview?placeid=ChIJV0S728r9YjkRBfIuWZfvmZ8",
     "google_review_mob_url": "https://g.page/r/CQXyLImX75mfEBM/review",

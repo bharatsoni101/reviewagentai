@@ -6,7 +6,7 @@ export function ErrorState({ message, onRetry }: { message: string; onRetry?: ()
       <h2 className="mt-2 text-xl font-extrabold tracking-tight text-slate-950">We couldn't load this page</h2>
       <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600">{message}</p>
       {onRetry && (
-        <button className="mt-6 rounded-2xl bg-slate-950 px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-indigo-100" onClick={onRetry}>
+        <button className="ra-button ra-button-primary mt-6 w-full sm:w-auto" onClick={onRetry}>
           Try again
         </button>
       )}
