@@ -246,3 +246,15 @@ For frontend changes:
 3. npm run dev
 4. npm test
 5. npm run build
+
+PHASE 12 AUTHENTICATION QUICK TEST
+----------------------------------
+1. Ensure DEMO_AUTH_SEED=true in your local environment.
+2. Start the backend: uvicorn backend.app.main:app --reload
+3. Start the frontend: cd frontend && npm install && npm run dev
+4. Open http://localhost:5173/login
+5. Admin demo: admin@reviewagentai.local / Admin@12345
+6. Business owner demo: owner@reviewagentai.local / Owner@12345
+7. After login, /account shows the authenticated role and linked business.
+8. API docs: http://127.0.0.1:8000/docs
+9. For production/shared environments set a long random AUTH_SECRET and DEMO_AUTH_SEED=false.

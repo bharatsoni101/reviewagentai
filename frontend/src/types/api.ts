@@ -102,3 +102,21 @@ export type ApiError = {
 
 // Backward-compatible alias for the customer landing page API contract.
 export type CustomerAccessResponse = CustomerAccess
+
+
+export type User = {
+  id: number
+  email: string
+  full_name: string
+  role: 'ADMIN' | 'BUSINESS_OWNER' | string
+  business_id: number | null
+  is_active: boolean
+  created_at: string
+}
+
+export type LoginResponse = {
+  access_token: string
+  token_type: string
+  expires_in: number
+  user: User
+}

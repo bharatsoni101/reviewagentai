@@ -231,3 +231,26 @@ The customer-facing frontend follows the selected **Modern SaaS / Premium** desi
 - Business-brand-friendly presentation
 
 The design tokens and reusable classes live primarily in `frontend/src/index.css`, with shared presentation components in `frontend/src/components/`.
+
+## Phase 12 - Authentication
+
+Phase 12 adds the authentication foundation without changing the public customer review flow.
+
+- Roles: `ADMIN` and `BUSINESS_OWNER`
+- Secure PBKDF2 password hashing with per-user salts
+- Short-lived signed bearer access tokens
+- `POST /api/v1/auth/login`
+- `GET /api/v1/auth/me`
+- `POST /api/v1/auth/change-password`
+- Admin-only `GET /api/v1/auth/users`
+- Admin-only `POST /api/v1/auth/users`
+- Admin-only `POST /api/v1/auth/users/{user_id}/deactivate`
+- Business-owner users are linked to exactly one business in the current MVP model
+- Demo authentication users are seeded only when `DEMO_AUTH_SEED=true`
+
+### Local demo credentials
+
+Admin: `admin@reviewagentai.local` / `Admin@12345`
+Business owner: `owner@reviewagentai.local` / `Owner@12345`
+
+Change these immediately if this environment is exposed beyond local development. Set a long random `AUTH_SECRET` in any shared or production environment and set `DEMO_AUTH_SEED=false`.

@@ -22,6 +22,10 @@ class Settings:
 
     groq_api_key: str | None = os.getenv("GROQ_API_KEY")
 
+    # Long random secret used to sign authentication access tokens.
+    auth_secret: str = os.getenv("AUTH_SECRET", "change-this-development-secret")
+    demo_auth_seed: bool = os.getenv("DEMO_AUTH_SEED", "true").strip().lower() in {"1", "true", "yes"}
+
     groq_model: str = os.getenv(
         "GROQ_MODEL",
         "openai/gpt-oss-120b",
@@ -30,6 +34,9 @@ class Settings:
     review_session_timeout_minutes: int = int(os.getenv("REVIEW_SESSION_TIMEOUT_MINUTES", "30"))
     ai_rate_limit_requests: int = int(os.getenv("AI_RATE_LIMIT_REQUESTS", "10"))
     ai_rate_limit_window_seconds: int = int(os.getenv("AI_RATE_LIMIT_WINDOW_SECONDS", "60"))
+    private_feedback_rate_limit_requests: int = int(os.getenv("PRIVATE_FEEDBACK_RATE_LIMIT_REQUESTS", "5"))
+    private_feedback_rate_limit_window_seconds: int = int(os.getenv("PRIVATE_FEEDBACK_RATE_LIMIT_WINDOW_SECONDS", "60"))
+    business_api_key: str | None = os.getenv("BUSINESS_API_KEY")
 
     @property
     def cors_origin_list(self) -> list[str]:

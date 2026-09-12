@@ -1,3 +1,4 @@
+import { getAuthToken } from './auth'
 import type {
   ApiError,
   Business,
@@ -30,6 +31,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       ...options,
       headers: {
         'Content-Type': 'application/json',
+        ...(getAuthToken() ? { Authorization: `Bearer ${getAuthToken()}` } : {}),
         ...(options.headers || {}),
       },
     })
@@ -55,6 +57,20 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
+  login: (email: string, password: string) =>
+    request<import('../types/api').LoginResponse>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    }),
+
+  getMe: () => request<import('../types/api').User>('/auth/me'),
+
+  changePassword: (currentPassword: string, newPassword: string) =>
+    request<void>('/auth/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),
+    }),
+
   getBusiness: (slug: string) => request<Business>(`/businesses/${encodeURIComponent(slug)}`),
 
   createAccess: (slug: string, source: 'nfc' | 'qr' | 'direct') =>

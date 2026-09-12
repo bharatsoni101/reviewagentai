@@ -278,3 +278,104 @@ The frontend preserves the rule that Google reviews are never submitted automati
 UI DESIGN SYSTEM DECISION
 -------------------------
 The project has adopted Option 1 — Modern SaaS / Premium as the standard customer-facing design system. All future Phase 5+ frontend changes should maintain this visual language unless the product owner explicitly selects a new design direction.
+
+PHASE 12 - AUTHENTICATION & USER MANAGEMENT
+-------------------------------------------
+12.1 User model with role-based access (ADMIN / BUSINESS_OWNER)
+12.2 Business-user ownership relationship
+12.3 Secure password hashing and verification
+12.4 Access-token authentication with expiry
+12.5 Login API and authenticated current-user API
+12.6 Role-based authorization dependencies
+12.7 Protected password-change API
+12.8 Business owner isolation foundation
+12.9 Admin authentication foundation
+12.10 Login screen and protected account screen
+12.11 Authentication error handling and rate-limit-ready structure
+12.12 Authentication regression/security tests
+12.13 Password reset workflow and email delivery (planned hardening)
+
+PHASE 13 - BUSINESS OWNER DASHBOARD
+------------------------------------
+13.1 Authenticated business dashboard
+13.2 Review overview cards
+13.3 Rating distribution and trends
+13.4 Positive review analytics
+13.5 Private complaint/feedback inbox
+13.6 Complaint status management
+13.7 Review and feedback filtering
+13.8 Dashboard date ranges
+13.9 Business profile/settings access
+13.10 Responsive owner dashboard
+
+PHASE 14 - NOTIFICATION CENTER
+------------------------------
+14.1 In-app notification center
+14.2 Unread/read state
+14.3 Complaint notification details
+14.4 Notification filtering
+14.5 Notification status lifecycle
+14.6 Retry/error visibility
+14.7 Email notification integration
+
+PHASE 15 - BILLING & SUBSCRIPTIONS
+----------------------------------
+15.1 Subscription/plan model
+15.2 Starter / Professional / Business plans
+15.3 Trial period support
+15.4 Payment gateway integration (Razorpay/Stripe)
+15.5 Payment success/failure handling
+15.6 Subscription renewal/cancellation
+15.7 Upgrade/downgrade flows
+15.8 Invoice/receipt references
+15.9 Usage limits and plan enforcement
+15.10 Billing history
+
+PHASE 16 - BUSINESS SETTINGS & BRANDING
+---------------------------------------
+16.1 Business profile management
+16.2 Logo and branding configuration
+16.3 Brand colors/theme settings
+16.4 Customer welcome message
+16.5 Google review URL management
+16.6 Social link management
+16.7 NFC/QR configuration
+16.8 Business-specific customer experience settings
+
+PHASE 17 - ADVANCED ANALYTICS & EXPORTS
+---------------------------------------
+17.1 Review conversion analytics
+17.2 Positive/negative ratio
+17.3 Rating trends
+17.4 Complaint trends
+17.5 Google handoff analytics
+17.6 AI vs fallback usage analytics
+17.7 NFC vs QR performance
+17.8 Location/date comparisons
+17.9 CSV/Excel exports
+17.10 PDF reporting
+
+PHASE 18 - MULTI-LOCATION / MULTI-BUSINESS
+------------------------------------------
+18.1 Multiple business locations per owner
+18.2 Location switching
+18.3 Location-specific QR/NFC access
+18.4 Location-specific Google URLs
+18.5 Location-level analytics
+18.6 Consolidated owner analytics
+18.7 Location user permissions
+
+PHASE 19 - SECURITY, PERFORMANCE & PRODUCTION HARDENING
+-------------------------------------------------------
+19.1 Comprehensive authorization audit
+19.2 Audit logs
+19.3 Brute-force protection
+19.4 API abuse/rate-limit review
+19.5 Secure headers and cookie/token review
+19.6 Input/output security review
+19.7 Database indexing/performance review
+19.8 Background task reliability
+19.9 Monitoring and alerting
+19.10 Disaster recovery validation
+19.11 Production security checklist
+19.12 Final regression suite

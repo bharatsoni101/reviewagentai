@@ -4,6 +4,9 @@ from backend.app.db.database import SessionLocal
 from backend.app.models.business import Business
 from backend.app.models.fallback_review_comment import FallbackReviewComment
 from backend.app.models.social_link import SocialLink
+from backend.app.models.user import User
+from backend.app.core.security import hash_password
+from backend.app.core.config import settings
 
 REVIEWAGENTAI_BUSINESS = {
     "slug": "reviewagentai",
@@ -142,8 +145,40 @@ def _seed_business(db, business_data: dict) -> None:
     _seed_fallback_comments(db, business)
 
 
+
+def _seed_users(db) -> None:
+    users = [
+        {
+            "email": "admin@reviewagentai.local",
+            "password": "Admin@12345",
+            "full_name": "ReviewAgentAI Admin",
+            "role": "ADMIN",
+            "business_slug": None,
+        },
+        {
+            "email": "owner@reviewagentai.local",
+            "password": "Owner@12345",
+            "full_name": "ReviewAgentAI Business Owner",
+            "role": "BUSINESS_OWNER",
+            "business_slug": "reviewagentai",
+        },
+    ]
+    for item in users:
+        user = db.scalar(select(User).where(User.email == item["email"]))
+        business = db.scalar(select(Business).where(Business.slug == item["business_slug"])) if item["business_slug"] else None
+        if user is None:
+            db.add(User(email=item["email"], password_hash=hash_password(item["password"]), full_name=item["full_name"], role=item["role"], business_id=business.id if business else None, is_active=True))
+        else:
+            user.full_name = item["full_name"]
+            user.role = item["role"]
+            user.business_id = business.id if business else None
+            user.is_active = True
+
+
 def seed_demo_data() -> None:
     with SessionLocal() as db:
         _seed_business(db, REVIEWAGENTAI_BUSINESS)
         _seed_business(db, LEGACY_DEMO_BUSINESS)
+        if settings.demo_auth_seed:
+            _seed_users(db)
         db.commit()

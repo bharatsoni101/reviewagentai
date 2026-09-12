@@ -148,61 +148,34 @@ button { -webkit-tap-highlight-color: transparent; }
 .ra-social-x { background: #000; }
 .ra-social-default { background: #4f46e5; }
 
-
-/* Premium light-blue mountain atmosphere — visual only, no customer-flow changes. */
-.ra-app-shell {
-  background: #eaf6ff url('/mountain-bg.svg') center top / cover fixed no-repeat;
+/* Phase 12 authentication UI */
+.auth-page {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(96,165,250,.20), transparent 26rem),
+    radial-gradient(circle at 90% 85%, rgba(129,140,248,.16), transparent 28rem),
+    linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
 }
-.ra-app-main::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.34));
-}
-.ra-app-main > .relative { position: relative; z-index: 1; }
-
-.ra-card,
-.ra-app-shell .rounded-3xl.border,
-.ra-app-shell .rounded-3xl.border-slate-200 {
-  border-color: rgba(125, 177, 214, .48) !important;
-  box-shadow: 0 22px 55px rgba(43, 92, 125, .13), 0 0 0 1px rgba(255,255,255,.58) inset;
-}
-
-.ra-star-group {
-  width: fit-content;
-  margin-inline: auto;
-  padding: .55rem;
-  border: 1px solid rgba(93, 157, 207, .62);
-  border-radius: 1.25rem;
-  background: rgba(255,255,255,.58);
-  box-shadow: 0 12px 30px rgba(64, 122, 162, .10);
-}
-
-.ra-checkbox {
-  accent-color: #4f46e5;
-  border: 2px solid #8fb6d3 !important;
-  box-shadow: 0 0 0 1px rgba(255,255,255,.8) inset;
-}
-.ra-checkbox:focus { outline: none; box-shadow: 0 0 0 4px rgba(79,70,229,.12); }
-
-.ra-textarea {
-  border: 1px solid #9fc3de !important;
-  border-radius: 1rem;
-  background-color: rgba(255,255,255,.86);
-  box-shadow: 0 4px 14px rgba(51, 91, 120, .05) inset;
-}
-.ra-textarea:focus {
-  border-color: #6366f1 !important;
-  box-shadow: 0 0 0 4px rgba(99,102,241,.11);
-}
-
-.ra-button-selected {
-  color: #fff;
-  background: linear-gradient(135deg, #0f9f8f 0%, #0b7f73 100%);
-  border: 1px solid #0b7f73;
-  box-shadow: 0 10px 22px rgba(15, 159, 143, .24);
-}
-.ra-button-selected:hover:not(:disabled) {
-  background: linear-gradient(135deg, #12b3a0 0%, #0a756b 100%);
-}
+.auth-card { width: min(100%, 440px); padding: 36px; text-align: center; }
+.auth-mark { width: 64px; height: 64px; margin: 0 auto 18px; display:grid; place-items:center; border-radius: 20px; background:#111827; color:white; font-size:24px; font-weight:900; box-shadow:0 16px 32px rgba(17,24,39,.18); }
+.auth-card h1, .account-card h1 { margin: 8px 0; font-size: 32px; line-height: 1.1; letter-spacing: -.04em; color: var(--ra-ink); }
+.auth-subtitle { color: var(--ra-muted); margin: 0 auto 26px; max-width: 330px; line-height: 1.6; }
+.auth-form { display:grid; gap:16px; text-align:left; }
+.auth-form label { display:grid; gap:7px; color:var(--ra-ink-soft); font-size:13px; font-weight:800; }
+.auth-form .ra-input { width:100%; min-height:48px; padding:0 14px; }
+.auth-submit { width:100%; margin-top:4px; }
+.auth-error { border:1px solid #fecaca; background:#fff1f2; color:#b91c1c; padding:11px 13px; border-radius:14px; font-size:13px; }
+.auth-note { color:#94a3b8; font-size:12px; line-height:1.5; margin:22px 0 0; }
+.account-card { width:min(100%, 820px); padding:36px; }
+.account-top { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; }
+.account-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:28px; }
+.account-grid > div { border:1px solid #dbe4f0; border-radius:18px; padding:16px; background:#f8fbff; }
+.account-grid span { display:block; color:#64748b; font-size:11px; text-transform:uppercase; letter-spacing:.12em; font-weight:800; margin-bottom:7px; }
+.account-grid strong { color:#0f172a; font-size:14px; overflow-wrap:anywhere; }
+.account-placeholder { margin-top:18px; border:1px dashed #b7c9e6; border-radius:20px; padding:22px; background:linear-gradient(135deg,#eff6ff,#fff); }
+.account-placeholder h2 { margin:0 0 7px; font-size:19px; color:#0f172a; }
+.account-placeholder p { margin:0; color:#64748b; line-height:1.6; }
+@media (max-width: 700px) { .account-grid { grid-template-columns:1fr; } .account-top { flex-direction:column; } .account-card, .auth-card { padding:24px; } }

@@ -32,3 +32,4 @@ class Business(Base):
     fallback_review_comments = relationship("FallbackReviewComment", back_populates="business", cascade="all, delete-orphan")
     review_events = relationship("ReviewEvent", back_populates="business", cascade="all, delete-orphan")
     notifications = relationship("Notification", back_populates="business", cascade="all, delete-orphan")
+    users = relationship("User", back_populates="business")
