@@ -4,7 +4,9 @@ import { createCustomerAccess, getBusiness, recordSocialClick } from '../lib/api
 import { SocialIcon } from '../components/SocialLinks'
 import type { Business, CustomerAccessResponse } from '../types/api'
 
-const SOURCE_VALUES = new Set(['nfc', 'qr', 'direct'])
+type AccessSource = 'nfc' | 'qr' | 'direct'
+
+const SOURCE_VALUES: ReadonlySet<AccessSource> = new Set(['nfc', 'qr', 'direct'])
 
 const socialLabels: Record<string, string> = {
   FACEBOOK: 'Facebook',
@@ -17,9 +19,9 @@ const socialLabels: Record<string, string> = {
   WEBSITE: 'Website',
 }
 
-function normalizeSource(value: string | null) {
-  const source = value?.trim().toLowerCase() ?? 'direct'
-  return SOURCE_VALUES.has(source) ? source : 'direct'
+function normalizeSource(value: string | null): AccessSource {
+  const source = value?.trim().toLowerCase()
+  return source === 'nfc' || source === 'qr' || source === 'direct' ? source : 'direct'
 }
 
 
