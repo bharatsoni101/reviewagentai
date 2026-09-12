@@ -1,11 +1,12 @@
 export function ErrorState({ message, onRetry }: { message: string; onRetry?: () => void }) {
   return (
-    <div className="rounded-3xl border border-red-200 bg-red-50 p-6 text-center" role="alert">
-      <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-white text-red-600">!</div>
-      <h2 className="text-lg font-semibold text-slate-950">We couldn't load this page</h2>
+    <div className="rounded-[20px] border border-red-200 bg-gradient-to-br from-red-50 to-white p-6 text-center shadow-soft sm:p-8" role="alert">
+      <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 font-black text-red-600 shadow-sm">!</div>
+      <p className="ra-eyebrow text-red-500">Something went wrong</p>
+      <h2 className="mt-2 text-xl font-extrabold tracking-tight text-slate-950">We couldn't load this page</h2>
       <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-600">{message}</p>
       {onRetry && (
-        <button className="mt-5 rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800" onClick={onRetry}>
+        <button className="mt-6 rounded-2xl bg-slate-950 px-6 py-3.5 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-indigo-100" onClick={onRetry}>
           Try again
         </button>
       )}

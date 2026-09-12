@@ -212,3 +212,22 @@ npm run build
 ```
 
 Google review text is never submitted automatically. The selected final text is copied first, then the device-appropriate Google review URL returned by the backend is opened.
+
+## Frontend Design System — Option 1
+
+The customer-facing frontend follows the selected **Modern SaaS / Premium** design direction. Future UI changes should preserve this design system unless explicitly changed by the product owner.
+
+- Mobile-first responsive layout
+- Soft gray/white page surfaces
+- Deep navy/indigo primary actions
+- Blue/purple accent treatments
+- Green success, amber warning, and soft red error states
+- White cards with 16–20px rounded corners
+- Large rounded touch-friendly buttons
+- Prominent star rating controls
+- Modern sans-serif typography
+- Subtle gradients, blur, and shadows
+- Accessible keyboard focus states and reduced-motion support
+- Business-brand-friendly presentation
+
+The design tokens and reusable classes live primarily in `frontend/src/index.css`, with shared presentation components in `frontend/src/components/`.

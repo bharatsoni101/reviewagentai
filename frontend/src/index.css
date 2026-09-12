@@ -4,17 +4,98 @@
 
 :root {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #0f172a;
-  background: #f8fafc;
+  color: #0b1736;
+  background: #f5f7fb;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  --ra-navy: #0b1736;
+  --ra-indigo: #4338ca;
+  --ra-blue: #2563eb;
+  --ra-purple: #7c3aed;
+  --ra-muted: #64748b;
+  --ra-border: #e2e8f0;
+  --ra-surface: #ffffff;
+  --ra-page: #f5f7fb;
+  --ra-soft-indigo: #eef2ff;
+  --ra-soft-blue: #eff6ff;
+  --ra-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
 }
 
 * { box-sizing: border-box; }
-html { min-width: 320px; background: #f8fafc; }
-body { margin: 0; min-width: 320px; min-height: 100vh; }
+html { min-width: 320px; background: var(--ra-page); }
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(99, 102, 241, 0.10), transparent 28rem),
+    radial-gradient(circle at 92% 12%, rgba(59, 130, 246, 0.08), transparent 26rem),
+    var(--ra-page);
+}
 button, input, textarea { font: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
+
+/* Option 1 — Modern SaaS / Premium design system */
+.bg-slate-50 { background-color: var(--ra-page) !important; }
+.bg-white { background-color: var(--ra-surface) !important; }
+.bg-slate-950 { background-color: var(--ra-navy) !important; }
+.text-slate-950 { color: var(--ra-navy) !important; }
+.text-slate-900 { color: #14213d !important; }
+.text-slate-800 { color: #253451 !important; }
+.text-slate-700 { color: #3b4a66 !important; }
+.text-slate-600 { color: var(--ra-muted) !important; }
+.text-slate-500 { color: #7b879d !important; }
+.text-slate-400 { color: #94a3b8 !important; }
+.border-slate-200 { border-color: var(--ra-border) !important; }
+.border-slate-300 { border-color: #cbd5e1 !important; }
+.bg-slate-100 { background-color: #f1f5f9 !important; }
+.bg-slate-50\/50 { background-color: rgba(248, 250, 252, 0.7) !important; }
+.hover\:bg-slate-800:hover { background-color: #1e2a49 !important; }
+.hover\:bg-slate-50:hover { background-color: #f8fafc !important; }
+.hover\:border-slate-300:hover { border-color: #cbd5e1 !important; }
+.focus\:ring-slate-200:focus { --tw-ring-color: rgba(99, 102, 241, 0.20) !important; }
+.focus\:ring-slate-100:focus { --tw-ring-color: rgba(99, 102, 241, 0.12) !important; }
+.focus\:border-slate-400:focus { border-color: #818cf8 !important; }
+
+/* Make primary actions feel branded without changing component behavior. */
+button.bg-slate-950,
+a.bg-slate-950 {
+  background: linear-gradient(135deg, var(--ra-navy), #312e81) !important;
+  box-shadow: 0 12px 24px rgba(49, 46, 129, 0.20);
+}
+button.bg-slate-950:hover,
+a.bg-slate-950:hover {
+  background: linear-gradient(135deg, #111d42, var(--ra-indigo)) !important;
+  transform: translateY(-1px);
+}
+
+.shadow-soft { box-shadow: var(--ra-shadow) !important; }
+
+@layer components {
+  .ra-card {
+    @apply rounded-[20px] border border-slate-200 bg-white shadow-soft;
+  }
+  .ra-eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.18em] text-indigo-500;
+  }
+  .ra-primary-button {
+    @apply rounded-2xl bg-slate-950 px-6 py-4 font-bold text-white transition duration-200;
+    box-shadow: 0 12px 24px rgba(49, 46, 129, 0.20);
+  }
+  .ra-primary-button:hover { transform: translateY(-1px); }
+  .ra-primary-button:disabled { transform: none; }
+  .ra-secondary-button {
+    @apply rounded-2xl border border-slate-200 bg-white px-6 py-3 font-bold text-slate-800 transition duration-200;
+  }
+  .ra-secondary-button:hover { @apply bg-slate-50; transform: translateY(-1px); }
+  .ra-input {
+    @apply rounded-2xl border border-slate-200 bg-white outline-none transition duration-200;
+  }
+  .ra-input:focus {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.10);
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }

@@ -235,3 +235,14 @@ PHASE 4.3-4.13 FRONTEND TESTING
 17. Backend regression test
    cd C:\Users\DELL\IdeaProjects\reviewagentai
    pytest -q
+
+PHASE 4 UI DESIGN SYSTEM
+------------------------
+The frontend now uses the selected Modern SaaS / Premium design system. Keep future customer-facing UI changes consistent with the existing visual language: soft gray/white backgrounds, deep navy/indigo primary actions, blue/purple accents, white rounded cards, subtle gradients/shadows, large touch targets, prominent stars, and responsive mobile-first layouts.
+
+For frontend changes:
+1. cd frontend
+2. npm install
+3. npm run dev
+4. npm test
+5. npm run build

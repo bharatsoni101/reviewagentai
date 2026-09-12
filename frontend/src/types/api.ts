@@ -98,3 +98,7 @@ export type ApiError = {
   detail?: string | { msg?: string }[]
   code?: string
 }
+
+
+// Backward-compatible alias for the customer landing page API contract.
+export type CustomerAccessResponse = CustomerAccess

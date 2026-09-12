@@ -261,7 +261,7 @@ export function CustomerPage() {
       {notice && <div className="mb-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900" role="status">{notice}</div>}
 
       {stage === 'landing' && (
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-9">
+        <section className="ra-card relative overflow-hidden p-6 sm:p-9">
           <div className="text-center">
             {business.logo_url ? (
               <img src={business.logo_url} alt={`${business.name} logo`} className="mx-auto h-20 w-20 rounded-2xl object-cover ring-1 ring-slate-200" />
@@ -282,7 +282,7 @@ export function CustomerPage() {
       )}
 
       {stage === 'rating' && (
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-9">
+        <section className="ra-card relative overflow-hidden p-6 sm:p-9">
           <div className="text-center">
             <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Your experience</p>
             <h1 className="mt-2 text-3xl font-extrabold tracking-tight">How was your experience?</h1>
@@ -298,13 +298,13 @@ export function CustomerPage() {
       {stage === 'positive' && (
         <section className="space-y-5">
           {reviews.length === 0 ? (
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-9">
+            <div className="ra-card relative overflow-hidden p-6 sm:p-9">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">{rating}/5 experience</p>
               <h1 className="mt-2 text-3xl font-extrabold tracking-tight">What stood out to you?</h1>
               <p className="mt-3 text-sm leading-6 text-slate-600">Pick anything that genuinely describes your experience. You can also add your own words.</p>
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 {preferenceLabels.map(([key, label, helper]) => (
-                  <label key={key} className={`cursor-pointer rounded-2xl border p-4 transition ${preferences[key] ? 'border-slate-900 bg-slate-50 ring-2 ring-slate-900/10' : 'border-slate-200 bg-white hover:border-slate-300'}`}>
+                  <label key={key} className={`cursor-pointer rounded-2xl border p-4 transition duration-200 ${preferences[key] ? 'border-indigo-300 bg-indigo-50 ring-2 ring-indigo-100' : 'border-slate-200 bg-white hover:border-indigo-200 hover:bg-indigo-50/40'}`}>
                     <span className="flex items-start gap-3">
                       <input
                         type="checkbox"
@@ -352,7 +352,7 @@ export function CustomerPage() {
                 {reviews.map((review, index) => {
                   const selected = selectedReviewId === review.id
                   return (
-                    <article key={review.id} className={`rounded-3xl border bg-white p-5 shadow-sm transition sm:p-6 ${selected ? 'border-slate-900 ring-2 ring-slate-900/10' : 'border-slate-200'}`}>
+                    <article key={review.id} className={`rounded-3xl border bg-white p-5 shadow-sm transition sm:p-6 ${selected ? 'border-indigo-300 bg-indigo-50/30 ring-4 ring-indigo-100' : 'border-slate-200'}`}>
                       <div className="flex items-center justify-between gap-3">
                         <button type="button" onClick={() => setSelectedReviewId(review.id)} className="flex items-center gap-3 text-left font-semibold">
                           <span className={`flex h-7 w-7 items-center justify-center rounded-full text-xs ${selected ? 'bg-slate-950 text-white' : 'bg-slate-100 text-slate-500'}`}>{index + 1}</span>
@@ -385,7 +385,7 @@ export function CustomerPage() {
       )}
 
       {stage === 'private' && (
-        <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-9">
+        <section className="ra-card relative overflow-hidden p-6 sm:p-9">
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Private feedback</p>
           <h1 className="mt-2 text-3xl font-extrabold tracking-tight">Tell us what could be better</h1>
           <p className="mt-3 text-sm leading-6 text-slate-600">Your feedback will go privately to the business. It will not be posted as a public Google review.</p>
@@ -418,7 +418,7 @@ export function CustomerPage() {
       )}
 
       {stage === 'expired' && (
-        <section className="rounded-3xl border border-slate-200 bg-white p-7 text-center shadow-soft sm:p-10">
+        <section className="ra-card p-7 text-center sm:p-10">
           <h1 className="text-3xl font-extrabold tracking-tight">This session has expired</h1>
           <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-slate-600">For your security, review sessions are temporary. Start a new session to continue.</p>
           <button onClick={restart} className="mt-7 rounded-2xl bg-slate-950 px-6 py-3 text-sm font-bold text-white hover:bg-slate-800">Start again</button>

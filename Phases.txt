@@ -257,3 +257,24 @@ PHASE 11 - DEPLOYMENT / MVP RELEASE
 11.10 NFC/QR production URLs
 11.11 Production smoke tests
 11.12 MVP release checklist
+
+Phase 4 implementation status
+
+Phase 4.3-4.13 are implemented in the React customer experience.
+- 4.3 Business landing page
+- 4.4 NFC/QR customer entry page
+- 4.5 Business branding and social links
+- 4.6 Star rating UI
+- 4.7 Positive review checkbox UI
+- 4.8 Optional customer comment input
+- 4.9 Positive review option cards
+- 4.10 Review selection UI with customer editing and Copy & Open Google
+- 4.11 Private feedback UI for 1-3 stars
+- 4.12 Loading, error, empty, retry, clipboard-failure, and expired-session states
+- 4.13 Mobile-first responsive layout and accessibility basics
+
+The frontend preserves the rule that Google reviews are never submitted automatically. The final review text is copied first, then the selected device-appropriate Google URL is opened.
+
+UI DESIGN SYSTEM DECISION
+-------------------------
+The project has adopted Option 1 — Modern SaaS / Premium as the standard customer-facing design system. All future Phase 5+ frontend changes should maintain this visual language unless the product owner explicitly selects a new design direction.

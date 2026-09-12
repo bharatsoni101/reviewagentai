@@ -117,3 +117,13 @@ export const api = {
       headers: sessionId ? { 'X-Review-Session-ID': sessionId } : undefined,
     }).catch(() => undefined),
 }
+
+
+// Backward-compatible named exports used by the customer landing page.
+export const createCustomerAccess = (slug: string, source: 'nfc' | 'qr' | 'direct') =>
+  api.createAccess(slug, source)
+
+export const getBusiness = (slug: string) => api.getBusiness(slug)
+
+export const recordSocialClick = (slug: string, socialLinkId: number, sessionId?: string) =>
+  api.trackSocialClick(slug, socialLinkId, sessionId)
