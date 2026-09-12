@@ -41,6 +41,11 @@ from backend.app.schemas.private_feedback import (
 from backend.app.services.private_feedback_service import PrivateFeedbackService
 from backend.app.schemas.review_session_flow import ReviewSessionStatusResponse, ReviewFlowResponse
 
+private_feedback_rate_limiter = InMemoryRateLimiter(
+    max_requests=settings.private_feedback_rate_limit_requests,
+    window_seconds=settings.private_feedback_rate_limit_window_seconds,
+)
+
 ai_rate_limiter = InMemoryRateLimiter(
     max_requests=settings.ai_rate_limit_requests,
     window_seconds=settings.ai_rate_limit_window_seconds,
@@ -212,8 +217,17 @@ def generate_positive_reviews(
 def submit_private_feedback(
     session_id: str,
     request: PrivateFeedbackRequest,
+    http_request: Request,
     db: Session = Depends(get_db),
 ):
+    client_host = http_request.client.host if http_request.client else "unknown"
+    if not private_feedback_rate_limiter.allow(client_host):
+        raise api_error(
+            status.HTTP_429_TOO_MANY_REQUESTS,
+            "Too many private feedback submissions. Please try again shortly.",
+            "PRIVATE_FEEDBACK_RATE_LIMITED",
+            {"Retry-After": str(settings.private_feedback_rate_limit_window_seconds)},
+        )
     try:
         review_session, complaint, acknowledgement = (
             PrivateFeedbackService.submit_feedback(

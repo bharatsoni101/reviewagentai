@@ -231,3 +231,7 @@ The customer-facing frontend follows the selected **Modern SaaS / Premium** desi
 - Business-brand-friendly presentation
 
 The design tokens and reusable classes live primarily in `frontend/src/index.css`, with shared presentation components in `frontend/src/components/`.
+
+## Remaining MVP implementation status
+
+Phases 5-9 are implemented on top of the existing Phase 1-4 foundation, including private feedback, notification lifecycle/retrieval/retry, AI review safeguards, Google handoff behavior, and NFC/QR access handling. Phase 10 adds regression/security/abuse tests and production-only API-key protection for business-facing endpoints. Phase 11 is deployment preparation: production configuration, release checklist, HTTPS/monitoring/backup requirements, and smoke-test guidance. Actual hosting, DNS, TLS certificates, secret provisioning, and production database creation must be performed in the target infrastructure.
