@@ -30,9 +30,6 @@ class Settings:
     review_session_timeout_minutes: int = int(os.getenv("REVIEW_SESSION_TIMEOUT_MINUTES", "30"))
     ai_rate_limit_requests: int = int(os.getenv("AI_RATE_LIMIT_REQUESTS", "10"))
     ai_rate_limit_window_seconds: int = int(os.getenv("AI_RATE_LIMIT_WINDOW_SECONDS", "60"))
-    private_feedback_rate_limit_requests: int = int(os.getenv("PRIVATE_FEEDBACK_RATE_LIMIT_REQUESTS", "5"))
-    private_feedback_rate_limit_window_seconds: int = int(os.getenv("PRIVATE_FEEDBACK_RATE_LIMIT_WINDOW_SECONDS", "60"))
-    business_api_key: str | None = os.getenv("BUSINESS_API_KEY")
 
     @property
     def cors_origin_list(self) -> list[str]:

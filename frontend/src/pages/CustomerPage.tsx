@@ -425,7 +425,7 @@ export function CustomerPage() {
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-2xl text-emerald-700">✓</div>
           <h1 className="mt-5 text-3xl font-extrabold tracking-tight">Thank you!</h1>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-slate-600">{successMessage || 'Thanks for sharing your experience.'}</p>
-          <button onClick={restart} className="ra-button ra-button-secondary mt-7">Start a new review</button>
+          <button onClick={restart} className="ra-button ra-button-primary mt-7">Start a new review</button>
         </section>
       )}
 
