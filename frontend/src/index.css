@@ -122,3 +122,28 @@ button { -webkit-tap-highlight-color: transparent; }
     background: linear-gradient(90deg, #111827 0%, #4f46e5 55%, #a3e635 100%);
   }
 }
+
+
+/* Official social-brand colors */
+.ra-social-icon {
+  display: inline-flex;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.ra-social-icon svg { width: 17px; height: 17px; }
+.ra-social-instagram {
+  background: radial-gradient(circle at 30% 107%, #fdf497 0 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%);
+}
+.ra-social-facebook { background: #1877f2; }
+.ra-social-youtube { background: #ff0000; border-radius: 8px; }
+.ra-social-youtube svg { width: 18px; height: 18px; }
+.ra-social-whatsapp { background: #25d366; }
+.ra-social-linkedin { background: #0a66c2; border-radius: 7px; }
+.ra-social-x { background: #000; }
+.ra-social-default { background: #4f46e5; }

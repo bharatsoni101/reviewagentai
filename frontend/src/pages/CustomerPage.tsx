@@ -32,6 +32,12 @@ const preferenceLabels: Array<[keyof Preferences, string, string]> = [
   ['affordable_pricing', 'Affordable Pricing', 'The pricing felt reasonable and good value.'],
 ]
 
+function resolveLogoUrl(value: string | null | undefined) {
+  if (!value) return null
+  if (value.startsWith('/public/')) return value.replace(/^\/public/, '')
+  return value
+}
+
 function sourceFromQuery(search: string): 'nfc' | 'qr' | 'direct' {
   const source = new URLSearchParams(search).get('source')?.toLowerCase()
   return source === 'nfc' || source === 'qr' ? source : 'direct'
@@ -56,6 +62,7 @@ export function CustomerPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
+  const [logoFailed, setLogoFailed] = useState(false)
 
   const selectedReview = useMemo(() => reviews.find((review) => review.id === selectedReviewId) || null, [reviews, selectedReviewId])
 
@@ -263,8 +270,13 @@ export function CustomerPage() {
       {stage === 'landing' && (
         <section className="ra-card relative overflow-hidden p-6 sm:p-9">
           <div className="text-center">
-            {business.logo_url ? (
-              <img src={business.logo_url} alt={`${business.name} logo`} className="mx-auto h-20 w-20 rounded-2xl object-cover ring-1 ring-slate-200" />
+            {resolveLogoUrl(business.logo_url) && !logoFailed ? (
+              <img
+                src={resolveLogoUrl(business.logo_url) || undefined}
+                alt={`${business.name} logo`}
+                className="mx-auto h-20 w-20 rounded-2xl object-cover ring-1 ring-slate-200"
+                onError={() => setLogoFailed(true)}
+              />
             ) : (
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-slate-900 text-2xl font-bold text-white" aria-hidden="true">
                 {business.name.slice(0, 1).toUpperCase()}

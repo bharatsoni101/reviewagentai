@@ -1,21 +1,27 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { createCustomerAccess, getBusiness, recordSocialClick } from '../lib/api'
+import { SocialIcon } from '../components/SocialLinks'
 import type { Business, CustomerAccessResponse } from '../types/api'
 
 const SOURCE_VALUES = new Set(['nfc', 'qr', 'direct'])
+
+const socialLabels: Record<string, string> = {
+  FACEBOOK: 'Facebook',
+  INSTAGRAM: 'Instagram',
+  LINKEDIN: 'LinkedIn',
+  X: 'X',
+  TWITTER: 'Twitter',
+  YOUTUBE: 'YouTube',
+  WHATSAPP: 'WhatsApp',
+  WEBSITE: 'Website',
+}
 
 function normalizeSource(value: string | null) {
   const source = value?.trim().toLowerCase() ?? 'direct'
   return SOURCE_VALUES.has(source) ? source : 'direct'
 }
 
-function platformLabel(platform: string) {
-  return platform
-    .toLowerCase()
-    .replace(/[_-]+/g, ' ')
-    .replace(/\b\w/g, (letter) => letter.toUpperCase())
-}
 
 function initials(name: string) {
   return name
@@ -24,6 +30,27 @@ function initials(name: string) {
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase())
     .join('') || 'R'
+}
+
+
+function socialIconClass(platform: string) {
+  const p = platform.toUpperCase()
+  switch (p) {
+    case 'INSTAGRAM': return 'ra-social-icon ra-social-instagram'
+    case 'FACEBOOK': return 'ra-social-icon ra-social-facebook'
+    case 'YOUTUBE': return 'ra-social-icon ra-social-youtube'
+    case 'WHATSAPP': return 'ra-social-icon ra-social-whatsapp'
+    case 'LINKEDIN': return 'ra-social-icon ra-social-linkedin'
+    case 'X':
+    case 'TWITTER': return 'ra-social-icon ra-social-x'
+    default: return 'ra-social-icon ra-social-default'
+  }
+}
+
+function resolveLogoUrl(value: string | null | undefined) {
+  if (!value) return null
+  if (value.startsWith('/public/')) return value.replace(/^\/public/, '')
+  return value
 }
 
 export function CustomerLandingPage() {
@@ -37,6 +64,7 @@ export function CustomerLandingPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [socialLoadingId, setSocialLoadingId] = useState<number | null>(null)
+  const [logoFailed, setLogoFailed] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -123,11 +151,12 @@ export function CustomerLandingPage() {
       <section className="mx-auto max-w-3xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
         <div className="px-6 pb-8 pt-8 sm:px-10 sm:pt-10">
           <div className="flex flex-col items-center text-center">
-            {business.logo_url ? (
+            {resolveLogoUrl(business.logo_url) && !logoFailed ? (
               <img
-                src={business.logo_url}
+                src={resolveLogoUrl(business.logo_url) || undefined}
                 alt={`${business.name} logo`}
                 className="h-24 w-24 rounded-2xl border border-slate-200 object-cover shadow-sm"
+                onError={() => setLogoFailed(true)}
               />
             ) : (
               <div className="flex h-24 w-24 items-center justify-center rounded-2xl bg-slate-950 text-2xl font-bold text-white shadow-sm">
@@ -181,7 +210,10 @@ export function CustomerLandingPage() {
                   onClick={() => void handleSocialClick(link.id)}
                   className="ra-button ra-button-secondary min-h-11 px-4"
                 >
-                  <span>{platformLabel(link.platform)}</span>
+                  <span className={socialIconClass(link.platform)} aria-hidden="true">
+                    <SocialIcon platform={link.platform} />
+                  </span>
+                  <span>{socialLabels[link.platform.toUpperCase()] || link.platform}</span>
                   {socialLoadingId === link.id && <span className="text-xs text-slate-400">…</span>}
                 </a>
               ))}
