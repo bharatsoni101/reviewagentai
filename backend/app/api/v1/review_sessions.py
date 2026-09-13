@@ -39,6 +39,7 @@ from backend.app.schemas.private_feedback import (
     PrivateFeedbackResponse,
 )
 from backend.app.services.private_feedback_service import PrivateFeedbackService
+from backend.app.services.billing_service import BillingService
 from backend.app.schemas.review_session_flow import ReviewSessionStatusResponse, ReviewFlowResponse
 
 ai_rate_limiter = InMemoryRateLimiter(
@@ -146,6 +147,10 @@ def generate_positive_reviews(
         )
 
     try:
+        from backend.app.models.review_session import ReviewSession
+        session_obj = db.get(ReviewSession, session_id)
+        if session_obj is not None and not BillingService.within_usage_limit(db, session_obj.business_id):
+            raise HTTPException(status_code=402, detail="Monthly review limit reached for the current plan", headers={"X-Error-Code":"PLAN_LIMIT_REACHED"})
         review_session, reviews, generation_result, review_input = (
             GeneratedReviewService.generate_positive_reviews(
                 db=db,

@@ -32,6 +32,10 @@ class CustomerAccessService:
 
         if business.status != "ACTIVE":
             raise ValueError("Business is not active")
+        if normalized_source == "nfc" and not business.nfc_enabled:
+            raise ValueError("NFC access is disabled")
+        if normalized_source == "qr" and not business.qr_enabled:
+            raise ValueError("QR access is disabled")
 
         review_session = ReviewSessionService.create_session(
             db=db,

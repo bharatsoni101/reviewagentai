@@ -21,7 +21,7 @@ export function AccountPage() {
           <div><span>Email</span><strong>{user.email}</strong></div>
           <div><span>Business</span><strong>{user.business_id ? `Business #${user.business_id}` : 'Platform administration'}</strong></div>
         </div>
-        <div className="account-placeholder"><h2>Account foundation is ready</h2><p>Your authenticated session is active. Business dashboard and billing features will build on this secure account foundation in the next phases.</p></div>
+        <div className="account-placeholder"><h2>Owner workspace</h2><p>Your authenticated business workspace includes dashboard, feedback, notifications, settings and billing management.</p>{user.role === 'BUSINESS_OWNER' && <button className="ra-button ra-button-primary" onClick={() => navigate('/owner')}>Open business dashboard</button>}</div>
       </section>
     </main>
   )

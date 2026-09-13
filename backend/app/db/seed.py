@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from datetime import datetime, timedelta, timezone
 
 from backend.app.db.database import SessionLocal
 from backend.app.models.business import Business
@@ -7,6 +8,7 @@ from backend.app.models.social_link import SocialLink
 from backend.app.models.user import User
 from backend.app.core.security import hash_password
 from backend.app.core.config import settings
+from backend.app.models.subscription import Subscription
 
 REVIEWAGENTAI_BUSINESS = {
     "slug": "reviewagentai",
@@ -143,6 +145,8 @@ def _seed_business(db, business_data: dict) -> None:
 
     _seed_social_links(db, business)
     _seed_fallback_comments(db, business)
+    if db.scalar(select(Subscription).where(Subscription.business_id == business.id)) is None:
+        db.add(Subscription(business_id=business.id, plan="STARTER", status="TRIALING", provider="MOCK", trial_ends_at=datetime.now(timezone.utc).replace(tzinfo=None)+timedelta(days=14)))
 
 
 

@@ -21,6 +21,11 @@ class BusinessResponse(BaseModel):
     google_review_mob_url: str
     status: str
     prefer_ai_comments: bool
+    brand_primary_color: str
+    brand_secondary_color: str
+    welcome_message: str | None
+    nfc_enabled: bool
+    qr_enabled: bool
     created_at: datetime
     updated_at: datetime
     social_links: list[SocialLinkResponse] = Field(default_factory=list)

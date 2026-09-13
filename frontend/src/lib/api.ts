@@ -143,3 +143,23 @@ export const getBusiness = (slug: string) => api.getBusiness(slug)
 
 export const recordSocialClick = (slug: string, socialLinkId: number, sessionId?: string) =>
   api.trackSocialClick(slug, socialLinkId, sessionId)
+
+export const ownerApi = {
+  dashboard:(days:number)=>request<import('../types/api').OwnerDashboard>(`/owner/dashboard?days=${days}`),
+  notifications:(status?:string)=>request<import('../types/api').OwnerNotificationList>(`/owner/notifications${status?`?status=${status}`:''}`),
+  complaintStatus:(id:number,status:string)=>request(`/owner/complaints/${id}?new_status=${status}`,{method:'PATCH'}),
+  settings:()=>request<import('../types/api').BusinessSettings>('/owner/settings'),
+  profile:(body:object)=>request<import('../types/api').BusinessSettings>('/owner/settings/profile',{method:'PUT',body:JSON.stringify(body)}),
+  branding:(body:object)=>request<import('../types/api').BusinessSettings>('/owner/settings/branding',{method:'PUT',body:JSON.stringify(body)}),
+  reviews:(body:object)=>request<import('../types/api').BusinessSettings>('/owner/settings/reviews',{method:'PUT',body:JSON.stringify(body)}),
+  socialLinks:()=>request<import('../types/api').SocialLink[]>('/owner/social-links'),
+  createSocial:(body:object)=>request<import('../types/api').SocialLink>('/owner/social-links',{method:'POST',body:JSON.stringify(body)}),
+  updateSocial:(id:number,body:object)=>request<import('../types/api').SocialLink>(`/owner/social-links/${id}`,{method:'PUT',body:JSON.stringify(body)}),
+  deleteSocial:(id:number)=>request<void>(`/owner/social-links/${id}`,{method:'DELETE'}),
+  plans:()=>request<import('../types/api').Plan[]>('/billing/plans'),
+  subscription:()=>request<import('../types/api').Subscription>('/billing/subscription'),
+  checkout:(plan:string)=>request<any>('/billing/checkout',{method:'POST',body:JSON.stringify({plan})}),
+  confirm:(paymentId:number,success=true)=>request<any>('/billing/confirm',{method:'POST',body:JSON.stringify({payment_id:paymentId,success})}),
+  cancel:()=>request('/billing/cancel',{method:'POST'}),
+  history:()=>request<import('../types/api').BillingHistoryItem[]>('/billing/history'),
+}

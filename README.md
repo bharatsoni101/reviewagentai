@@ -254,3 +254,6 @@ Admin: `admin@reviewagentai.local` / `Admin@12345`
 Business owner: `owner@reviewagentai.local` / `Owner@12345`
 
 Change these immediately if this environment is exposed beyond local development. Set a long random `AUTH_SECRET` in any shared or production environment and set `DEMO_AUTH_SEED=false`.
+
+## Phases 13–16
+The consolidated owner dashboard, notification center, billing/subscriptions, and business settings/branding are implemented. See `PHASE13_16_IMPLEMENTATION.md`.

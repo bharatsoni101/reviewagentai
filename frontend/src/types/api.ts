@@ -120,3 +120,15 @@ export type LoginResponse = {
   expires_in: number
   user: User
 }
+
+export type Analytics = {
+  business_id:number; business_slug:string; period_days:number|null; total_events:number; event_counts:Record<string,number>; rating_counts:Record<string,number>;
+  landing_page_views:number; rating_selections:number; ai_reviews_generated:number; reviews_selected:number; google_handoffs:number; private_feedback_submitted:number; social_link_clicks:number; google_handoff_rate:number;
+}
+export type OwnerDashboard = { business_id:number; business_slug:string; business_name:string; category:string|null; logo_url:string|null; analytics:Analytics; complaint_counts:Record<string,number>; recent_complaints:Array<{id:number;rating:number;comments:string;status:string;notification_status:string;created_at:string}>; plan:string; subscription_status:string; unread_notifications:number }
+export type OwnerNotification = {id:number;complaint_id:number|null;type:string;status:string;message:string;created_at:string;sent_at:string|null;complaint_status:string|null}
+export type OwnerNotificationList = {items:OwnerNotification[];total:number;unread:number}
+export type BusinessSettings = {id:number;slug:string;name:string;description:string|null;category:string|null;logo_url:string|null;welcome_message:string|null;brand_primary_color:string;brand_secondary_color:string;prefer_ai_comments:boolean;google_review_pc_url:string;google_review_mob_url:string;nfc_enabled:boolean;qr_enabled:boolean;customer_settings:Record<string,unknown>;updated_at:string}
+export type Plan = {code:string;name:string;price_paise:number;monthly_review_limit:number}
+export type Subscription = {plan:string;status:string;provider:string;trial_ends_at:string|null;current_period_start:string|null;current_period_end:string|null;cancel_at_period_end:boolean}
+export type BillingHistoryItem = {id:number;plan:string;amount_paise:number;currency:string;status:string;provider:string;receipt_reference:string;created_at:string}

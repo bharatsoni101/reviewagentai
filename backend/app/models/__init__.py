@@ -18,4 +18,8 @@ __all__ = [
     "ReviewSession",
     "User",
     "FallbackReviewComment",
+    "Subscription",
+    "BillingPayment",
 ]
+
+from backend.app.models.subscription import Subscription, BillingPayment

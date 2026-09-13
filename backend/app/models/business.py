@@ -23,6 +23,12 @@ class Business(Base):
     prefer_ai_comments: Mapped[bool] = mapped_column(
         "PreferAIComments", Boolean, nullable=False, default=True, server_default="1"
     )
+    brand_primary_color: Mapped[str] = mapped_column(String(20), nullable=False, default="#4f46e5", server_default="#4f46e5")
+    brand_secondary_color: Mapped[str] = mapped_column(String(20), nullable=False, default="#312e81", server_default="#312e81")
+    welcome_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    nfc_enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="1")
+    qr_enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True, server_default="1")
+    customer_settings_json: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=func.now(), onupdate=func.now())
 
@@ -33,3 +39,4 @@ class Business(Base):
     review_events = relationship("ReviewEvent", back_populates="business", cascade="all, delete-orphan")
     notifications = relationship("Notification", back_populates="business", cascade="all, delete-orphan")
     users = relationship("User", back_populates="business")
+    subscription = relationship("Subscription", back_populates="business", uselist=False, cascade="all, delete-orphan")

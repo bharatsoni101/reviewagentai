@@ -37,6 +37,13 @@ class Settings:
     private_feedback_rate_limit_requests: int = int(os.getenv("PRIVATE_FEEDBACK_RATE_LIMIT_REQUESTS", "5"))
     private_feedback_rate_limit_window_seconds: int = int(os.getenv("PRIVATE_FEEDBACK_RATE_LIMIT_WINDOW_SECONDS", "60"))
     business_api_key: str | None = os.getenv("BUSINESS_API_KEY")
+    smtp_host: str | None = os.getenv("SMTP_HOST")
+    smtp_port: int = int(os.getenv("SMTP_PORT", "587"))
+    smtp_username: str | None = os.getenv("SMTP_USERNAME")
+    smtp_password: str | None = os.getenv("SMTP_PASSWORD")
+    notification_from_email: str | None = os.getenv("NOTIFICATION_FROM_EMAIL")
+    notification_to_email: str | None = os.getenv("NOTIFICATION_TO_EMAIL")
+    billing_provider: str = os.getenv("BILLING_PROVIDER", "MOCK").upper()
 
     @property
     def cors_origin_list(self) -> list[str]:
