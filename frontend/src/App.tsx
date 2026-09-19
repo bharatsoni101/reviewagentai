@@ -3,7 +3,13 @@ import { CustomerPage } from './pages/CustomerPage'
 import { LoginPage } from './pages/LoginPage'
 import { AccountPage } from './pages/AccountPage'
 import { OwnerDashboardPage } from './pages/OwnerDashboardPage'
+import { AdminDashboardPage } from './pages/AdminDashboardPage'
 import { getAuthToken } from './lib/auth'
+
+function ProtectedAdmin() {
+  const location = useLocation()
+  return getAuthToken() ? <AdminDashboardPage /> : <Navigate to="/login" replace state={{ from: location.pathname }} />
+}
 
 function ProtectedOwner() {
   const location = useLocation()
@@ -22,6 +28,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/account" element={<ProtectedAccount />} />
       <Route path="/owner" element={<ProtectedOwner />} />
+      <Route path="/admin" element={<ProtectedAdmin />} />
       <Route path="/" element={<Navigate to="/r/reviewagentai" replace />} />
       <Route path="*" element={<Navigate to="/r/reviewagentai" replace />} />
     </Routes>

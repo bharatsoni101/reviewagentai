@@ -11,6 +11,7 @@ from backend.app.api.v1.routes.notifications import router as notifications_rout
 from backend.app.api.v1.routes.owner import router as owner_router
 from backend.app.api.v1.routes.billing import router as billing_router
 from backend.app.api.v1.routes.advanced_analytics import router as advanced_analytics_router
+from backend.app.api.v1.routes.admin_businesses import router as admin_businesses_router
 from backend.app.api.v1.review_sessions import router as review_sessions_router
 
 api_router = APIRouter()
@@ -27,3 +28,4 @@ api_router.include_router(notifications_router)
 api_router.include_router(owner_router)
 api_router.include_router(billing_router)
 api_router.include_router(advanced_analytics_router)
+api_router.include_router(admin_businesses_router)

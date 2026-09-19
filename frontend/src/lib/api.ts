@@ -165,3 +165,15 @@ export const ownerApi = {
   advancedAnalytics:(days:number)=>request<import('../types/api').AdvancedAnalytics>(`/owner/analytics?days=${days}`),
   exportUrl:(format:'csv'|'xlsx'|'pdf',days:number)=>`${API_BASE_URL}/owner/analytics/export.${format}?days=${days}`,
 }
+
+export const adminApi = {
+  owners:()=>request<import('../types/api').AdminOwnerOption[]>('/admin/businesses/owners'),
+  list:(params:{search?:string;status?:string;owner_user_id?:number}={})=>{
+    const q=new URLSearchParams(); if(params.search) q.set('search',params.search); if(params.status) q.set('status',params.status); if(params.owner_user_id) q.set('owner_user_id',String(params.owner_user_id));
+    return request<import('../types/api').AdminBusinessListResponse>(`/admin/businesses${q.toString()?`?${q}`:''}`)
+  },
+  get:(id:number)=>request<import('../types/api').AdminBusinessDetail>(`/admin/businesses/${id}`),
+  create:(body:object)=>request<import('../types/api').AdminBusinessDetail>('/admin/businesses',{method:'POST',body:JSON.stringify(body)}),
+  update:(id:number,body:object)=>request<import('../types/api').AdminBusinessDetail>(`/admin/businesses/${id}`,{method:'PUT',body:JSON.stringify(body)}),
+  status:(id:number,value:string)=>request<import('../types/api').AdminBusinessDetail>(`/admin/businesses/${id}/status?new_status=${value}`,{method:'PATCH'}),
+}
