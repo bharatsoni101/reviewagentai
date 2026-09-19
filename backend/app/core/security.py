@@ -11,7 +11,7 @@ import hmac
 import json
 import secrets
 import time
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
@@ -94,6 +94,7 @@ def decode_access_token(token: str) -> dict:
 
 
 def get_current_user(
+    request: Request,
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer),
     db: Session = Depends(get_db),
 ) -> User:
@@ -103,6 +104,7 @@ def get_current_user(
     user = db.get(User, int(payload["sub"]))
     if user is None or not user.is_active:
         raise HTTPException(status_code=401, detail="User account is inactive or unavailable", headers={"WWW-Authenticate": "Bearer", "X-Error-Code": "USER_INACTIVE"})
+    request.state.current_user = user
     return user
 
 

@@ -8,6 +8,7 @@ class ReviewEvent(Base):
     __table_args__ = (
         Index("ix_review_events_business_created", "business_id", "created_at"),
         Index("ix_review_events_type", "event_type"),
+        Index("ix_review_events_business_type_created", "business_id", "event_type", "created_at"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

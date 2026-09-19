@@ -162,4 +162,6 @@ export const ownerApi = {
   confirm:(paymentId:number,success=true)=>request<any>('/billing/confirm',{method:'POST',body:JSON.stringify({payment_id:paymentId,success})}),
   cancel:()=>request('/billing/cancel',{method:'POST'}),
   history:()=>request<import('../types/api').BillingHistoryItem[]>('/billing/history'),
+  advancedAnalytics:(days:number)=>request<import('../types/api').AdvancedAnalytics>(`/owner/analytics?days=${days}`),
+  exportUrl:(format:'csv'|'xlsx'|'pdf',days:number)=>`${API_BASE_URL}/owner/analytics/export.${format}?days=${days}`,
 }
