@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
+from backend.app.models.subscription_plan import SubscriptionPlan
 from sqlalchemy.orm import Session
 from backend.app.core.security import require_business_owner
 from backend.app.db.database import get_db
@@ -9,7 +10,9 @@ from backend.app.schemas.billing import *
 from backend.app.services.billing_service import BillingService
 router=APIRouter(prefix='/billing',tags=['Billing'])
 @router.get('/plans',response_model=list[PlanResponse])
-def plans(): return [PlanResponse(code=k,name=k.title().replace('_',' '),**v) for k,v in PLANS.items()]
+def plans(db: Session = Depends(get_db)):
+    BillingService.ensure_plans(db)
+    return [PlanResponse(code=p.code,name=p.name,price_paise=p.price_paise,monthly_review_limit=p.monthly_review_limit) for p in db.scalars(select(SubscriptionPlan).where(SubscriptionPlan.is_active.is_(True)).order_by(SubscriptionPlan.id)).all()]
 @router.get('/subscription',response_model=SubscriptionResponse)
 def subscription(user:User=Depends(require_business_owner),db:Session=Depends(get_db)): return BillingService.subscription(db,user.business_id)
 @router.post('/checkout',response_model=CheckoutResponse)

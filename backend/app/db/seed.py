@@ -9,6 +9,7 @@ from backend.app.models.user import User
 from backend.app.core.security import hash_password
 from backend.app.core.config import settings
 from backend.app.models.subscription import Subscription
+from backend.app.models.subscription_plan import SubscriptionPlan
 
 REVIEWAGENTAI_BUSINESS = {
     "slug": "reviewagentai",
@@ -57,6 +58,24 @@ DEFAULT_FALLBACK_COMMENTS = {
     ],
 }
 
+
+
+DEFAULT_PLANS = [
+    ("STARTER", "Starter", 99900, 100, 14),
+    ("PROFESSIONAL", "Professional", 249900, 500, 14),
+    ("BUSINESS", "Business", 499900, 2000, 14),
+]
+
+
+def _seed_plans(db) -> None:
+    for code, name, price_paise, monthly_review_limit, trial_days in DEFAULT_PLANS:
+        plan = db.scalar(select(SubscriptionPlan).where(SubscriptionPlan.code == code))
+        if plan is None:
+            db.add(SubscriptionPlan(code=code, name=name, price_paise=price_paise, monthly_review_limit=monthly_review_limit, trial_days=trial_days, is_active=True))
+        else:
+            # Keep admin-customized price/limit/name intact; only repair missing/invalid values.
+            if plan.trial_days < 0:
+                plan.trial_days = trial_days
 
 def _seed_social_links(db, business: Business) -> None:
     canonical_platforms = {platform for platform, _, _ in DEMO_LINKS}
@@ -181,6 +200,7 @@ def _seed_users(db) -> None:
 
 def seed_demo_data() -> None:
     with SessionLocal() as db:
+        _seed_plans(db)
         _seed_business(db, REVIEWAGENTAI_BUSINESS)
         _seed_business(db, LEGACY_DEMO_BUSINESS)
         if settings.demo_auth_seed:

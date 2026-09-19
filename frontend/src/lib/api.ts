@@ -166,14 +166,17 @@ export const ownerApi = {
   exportUrl:(format:'csv'|'xlsx'|'pdf',days:number)=>`${API_BASE_URL}/owner/analytics/export.${format}?days=${days}`,
 }
 
-export const adminApi = {
-  owners:()=>request<import('../types/api').AdminOwnerOption[]>('/admin/businesses/owners'),
-  list:(params:{search?:string;status?:string;owner_user_id?:number}={})=>{
-    const q=new URLSearchParams(); if(params.search) q.set('search',params.search); if(params.status) q.set('status',params.status); if(params.owner_user_id) q.set('owner_user_id',String(params.owner_user_id));
-    return request<import('../types/api').AdminBusinessListResponse>(`/admin/businesses${q.toString()?`?${q}`:''}`)
-  },
-  get:(id:number)=>request<import('../types/api').AdminBusinessDetail>(`/admin/businesses/${id}`),
-  create:(body:object)=>request<import('../types/api').AdminBusinessDetail>('/admin/businesses',{method:'POST',body:JSON.stringify(body)}),
-  update:(id:number,body:object)=>request<import('../types/api').AdminBusinessDetail>(`/admin/businesses/${id}`,{method:'PUT',body:JSON.stringify(body)}),
-  status:(id:number,value:string)=>request<import('../types/api').AdminBusinessDetail>(`/admin/businesses/${id}/status?new_status=${value}`,{method:'PATCH'}),
+export const adminBillingApi = {
+  plans: () => request<import('../types/api').AdminPlan[]>('/admin/billing/plans'),
+  updatePlan: (code: string, body: object) => request<import('../types/api').AdminPlan>(`/admin/billing/plans/${encodeURIComponent(code)}`, { method: 'PUT', body: JSON.stringify(body) }),
+  subscriptions: () => request<import('../types/api').AdminSubscription[]>('/admin/billing/subscriptions'),
+  updateSubscription: (businessId: number, body: object) => request<import('../types/api').AdminSubscription>(`/admin/billing/subscriptions/${businessId}`, { method: 'PUT', body: JSON.stringify(body) }),
+}
+
+export const adminBusinessApi = {
+  list: () => request<{businesses: import('../types/api').AdminBusiness[]; owners: import('../types/api').AdminOwnerOption[]}>('/admin/businesses'),
+  get: (id:number) => request<import('../types/api').AdminBusiness>(`/admin/businesses/${id}`),
+  create: (body:object) => request<import('../types/api').AdminBusiness>('/admin/businesses',{method:'POST',body:JSON.stringify(body)}),
+  update: (id:number, body:object) => request<import('../types/api').AdminBusiness>(`/admin/businesses/${id}`,{method:'PUT',body:JSON.stringify(body)}),
+  toggleStatus: (id:number, active:boolean) => request<import('../types/api').AdminBusiness>(`/admin/businesses/${id}/status?active=${active}`,{method:'PATCH'}),
 }

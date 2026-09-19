@@ -3,17 +3,32 @@ import { CustomerPage } from './pages/CustomerPage'
 import { LoginPage } from './pages/LoginPage'
 import { AccountPage } from './pages/AccountPage'
 import { OwnerDashboardPage } from './pages/OwnerDashboardPage'
+import { getAuthToken, getStoredUser } from './lib/auth'
+import { AdminBillingPage } from './pages/AdminBillingPage'
 import { AdminDashboardPage } from './pages/AdminDashboardPage'
-import { getAuthToken } from './lib/auth'
-
-function ProtectedAdmin() {
-  const location = useLocation()
-  return getAuthToken() ? <AdminDashboardPage /> : <Navigate to="/login" replace state={{ from: location.pathname }} />
-}
+import { AdminBusinessFormPage } from './pages/AdminBusinessFormPage'
 
 function ProtectedOwner() {
   const location = useLocation()
   return getAuthToken() ? <OwnerDashboardPage /> : <Navigate to="/login" replace state={{ from: location.pathname }} />
+}
+
+function ProtectedAdmin() {
+  const location = useLocation()
+  const user = getStoredUser()
+  return getAuthToken() && user?.role === 'ADMIN' ? <AdminDashboardPage /> : <Navigate to="/login" replace state={{ from: location.pathname }} />
+}
+
+function ProtectedAdminForm() {
+  const location = useLocation()
+  const user = getStoredUser()
+  return getAuthToken() && user?.role === 'ADMIN' ? <AdminBusinessFormPage /> : <Navigate to="/login" replace state={{ from: location.pathname }} />
+}
+
+function ProtectedAdminBilling() {
+  const location = useLocation()
+  const user = getStoredUser()
+  return getAuthToken() && user?.role === 'ADMIN' ? <AdminBillingPage /> : <Navigate to="/login" replace state={{ from: location.pathname }} />
 }
 
 function ProtectedAccount() {
@@ -29,6 +44,9 @@ export default function App() {
       <Route path="/account" element={<ProtectedAccount />} />
       <Route path="/owner" element={<ProtectedOwner />} />
       <Route path="/admin" element={<ProtectedAdmin />} />
+      <Route path="/admin/businesses/new" element={<ProtectedAdminForm />} />
+      <Route path="/admin/businesses/:id" element={<ProtectedAdminForm />} />
+      <Route path="/admin/billing" element={<ProtectedAdminBilling />} />
       <Route path="/" element={<Navigate to="/r/reviewagentai" replace />} />
       <Route path="*" element={<Navigate to="/r/reviewagentai" replace />} />
     </Routes>

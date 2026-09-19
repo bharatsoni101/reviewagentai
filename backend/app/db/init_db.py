@@ -16,6 +16,7 @@ from backend.app.models import (
     Subscription,
     BillingPayment,
     AuditLog,
+    SubscriptionPlan,
 )
 
 EXPECTED_TABLES = {
@@ -31,6 +32,7 @@ EXPECTED_TABLES = {
     "subscriptions",
     "billing_payments",
     "audit_logs",
+    "subscription_plans",
 }
 
 def initialize_database() -> None:
