@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { clearAuth, getStoredUser } from '../lib/auth'
-import { RoleMenu } from '../components/RoleMenu'
 
+import { RoleMenu } from '../components/RoleMenu'
 export function AccountPage() {
   const navigate = useNavigate()
   const user = getStoredUser()
@@ -14,8 +14,7 @@ export function AccountPage() {
   const logout = () => { clearAuth(); navigate('/login', { replace: true }) }
 
   return (
-    <main className="auth-page">
-      <RoleMenu />
+    <main className="auth-page"><RoleMenu />
       <section className="account-card ra-card">
         <div className="account-top"><div><div className="ra-eyebrow">Authenticated account</div><h1>{user.full_name}</h1></div><button className="ra-button ra-button-secondary" onClick={logout}>Sign out</button></div>
         <div className="account-grid">

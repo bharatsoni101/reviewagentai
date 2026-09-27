@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { adminBillingApi } from '../lib/api'
 import type { AdminPlan, AdminSubscription } from '../types/api'
-import { RoleMenu } from '../components/RoleMenu'
 
+import { RoleMenu } from '../components/RoleMenu'
 const money = (paise: number) => `₹${(paise / 100).toLocaleString('en-IN')}`
 
 export function AdminBillingPage() {
