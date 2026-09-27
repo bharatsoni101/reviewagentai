@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { adminBusinessApi } from '../lib/api'
 import type { AdminBusiness, AdminOwnerOption } from '../types/api'
+import { RoleMenu } from '../components/RoleMenu'
 
 const empty = {slug:'',name:'',description:'',category:'',logo_url:'',google_review_pc_url:'',google_review_mob_url:'',status:'ACTIVE',prefer_ai_comments:true,brand_primary_color:'#2563eb',brand_secondary_color:'#0f172a',welcome_message:'',nfc_enabled:false,qr_enabled:true,customer_settings:{}} 
 
@@ -12,7 +13,7 @@ export function AdminBusinessFormPage(){
   const set=(k:string,v:unknown)=>setForm((x:any)=>({...x,[k]:v}))
   const save=async()=>{setSaving(true);setMessage('');try{const body={...form,owner_id:ownerId?Number(ownerId):null,customer_settings:form.customer_settings||{},social_links:form.social_links||[]};delete body.id;delete body.owner_id; // re-add explicitly below
     const payload={...body,owner_id:ownerId?Number(ownerId):null}; const result=editing?await adminBusinessApi.update(Number(id),payload):await adminBusinessApi.create(payload);setMessage('Business saved successfully.');setTimeout(()=>navigate('/admin'),350);return result}catch(e){setMessage(e instanceof Error?e.message:'Unable to save business.')}finally{setSaving(false)}}
-  return <main className="page-shell"><section className="page-card"><div className="page-heading"><div><p className="eyebrow">ADMIN WORKSPACE</p><h1>{editing?'Edit business':'Add business'}</h1><p>Manage the business profile and customer-facing configuration.</p></div><button className="secondary-button" onClick={()=>navigate('/admin')}>Back</button></div>{message&&<div className="notice">{message}</div>}
+  return <main className="page-shell"><RoleMenu /><section className="page-card"><div className="page-heading"><div><p className="eyebrow">ADMIN WORKSPACE</p><h1>{editing?'Edit business':'Add business'}</h1><p>Manage the business profile and customer-facing configuration.</p></div><button className="secondary-button" onClick={()=>navigate('/admin')}>Back</button></div>{message&&<div className="notice">{message}</div>}
     <div className="admin-form-grid">
       {([['name','Business name'],['slug','Slug'],['category','Category'],['logo_url','Logo URL'],['google_review_pc_url','Google review PC URL'],['google_review_mob_url','Google review mobile URL'],['brand_primary_color','Primary brand color'],['brand_secondary_color','Secondary brand color']] as const).map(([k,l])=><label key={k}>{l}<input value={form[k]??''} onChange={e=>set(k,e.target.value)}/></label>)}
       <label>Owner<select value={ownerId} onChange={e=>setOwnerId(e.target.value)}><option value="">Unassigned</option>{owners.filter(o=>o.is_active).map(o=><option key={o.id} value={o.id}>{o.full_name} — {o.email}</option>)}</select></label>

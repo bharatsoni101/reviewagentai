@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { adminBillingApi } from '../lib/api'
 import type { AdminPlan, AdminSubscription } from '../types/api'
+import { RoleMenu } from '../components/RoleMenu'
 
 const money = (paise: number) => `₹${(paise / 100).toLocaleString('en-IN')}`
 
@@ -40,7 +41,7 @@ export function AdminBillingPage() {
     finally { setSaving(null) }
   }
 
-  return <main className="page-shell">
+  return <main className="page-shell"><RoleMenu />
     <section className="page-card">
       <div className="page-heading"><div><p className="eyebrow">ADMIN</p><h1>Subscription management</h1><p>Update plan pricing/limits and assign subscription details to businesses.</p></div></div>
       {message && <div className="notice">{message}</div>}

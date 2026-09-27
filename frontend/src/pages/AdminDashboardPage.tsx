@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { adminBusinessApi } from '../lib/api'
 import type { AdminBusiness, AdminOwnerOption } from '../types/api'
+import { RoleMenu } from '../components/RoleMenu'
 
 export function AdminDashboardPage() {
   const navigate = useNavigate()
@@ -42,7 +43,7 @@ export function AdminDashboardPage() {
     } catch (e) { setMessage(e instanceof Error ? e.message : 'Unable to update business status.') }
   }
 
-  return <main className="page-shell">
+  return <main className="page-shell"><RoleMenu />
     <section className="page-card">
       <div className="page-heading admin-heading">
         <div><p className="eyebrow">ADMIN WORKSPACE</p><h1>Business administration</h1><p>Manage all businesses, owners, subscriptions and customer-facing settings.</p></div>
