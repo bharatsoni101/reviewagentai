@@ -56,7 +56,7 @@ def test_private_feedback_is_saved_and_returns_acknowledgement():
 
     response = client.post(
         f"/api/v1/reviews/session/{session_id}/private-feedback",
-        json={"comments": "The staff was slow and the wait was too long."},
+        json={"comments": "Test private feedback message for automated testing."},
     )
 
     assert response.status_code == 201

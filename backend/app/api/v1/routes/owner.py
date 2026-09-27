@@ -41,7 +41,7 @@ def notifications(status_filter:str|None=Query(None,alias='status',pattern='^(PE
     result=[]
     for n in items:
         c=db.get(LocalComplaint,n.complaint_id) if n.complaint_id else None
-        result.append(OwnerNotification(id=n.id,complaint_id=n.complaint_id,type=n.type,status=n.status,message=n.message,created_at=n.created_at,sent_at=n.sent_at,complaint_status=c.status if c else None))
+        result.append(OwnerNotification(id=n.id,complaint_id=n.complaint_id,type=n.type,status=n.status,message=n.message,created_at=n.created_at,sent_at=n.sent_at,complaint_status=c.status if c else None,complaint_rating=c.rating if c else None,complaint_comments=c.comments if c else None,complaint_customer_name=c.customer_name if c else None,complaint_phone_number=c.phone_number if c else None))
     return OwnerNotificationList(items=result,total=int(db.scalar(select(func.count(Notification.id)).where(Notification.business_id==b.id)) or 0),unread=unread)
 
 @router.patch('/complaints/{complaint_id}')
