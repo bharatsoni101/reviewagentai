@@ -33,6 +33,9 @@ class AdminBusinessCreate(BaseModel):
     customer_settings: dict[str, object] = Field(default_factory=dict)
     social_links: list[AdminSocialLink] = Field(default_factory=list)
     owner_id: int | None = None
+    owner_full_name: str | None = Field(default=None, max_length=200)
+    owner_email: str | None = Field(default=None, max_length=320)
+    owner_password: str | None = Field(default=None, min_length=8, max_length=200)
 
 class AdminBusinessUpdate(AdminBusinessCreate):
     pass

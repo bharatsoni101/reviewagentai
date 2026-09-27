@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
-from backend.app.core.security import require_admin
+from backend.app.core.security import hash_password, require_admin
 from backend.app.db.database import get_db
 from backend.app.models.business import Business
 from backend.app.models.complaint import LocalComplaint
@@ -106,10 +106,26 @@ def get_business(business_id: int, _admin: User = Depends(require_admin), db: Se
 def create_business(payload: AdminBusinessCreate, _admin: User = Depends(require_admin), db: Session = Depends(get_db)):
     if db.scalar(select(Business).where(Business.slug == payload.slug.strip())) is not None:
         raise HTTPException(409, 'Business slug already exists')
-    owner=_validate_owner(db,payload.owner_id)
+    if payload.owner_id is not None:
+        raise HTTPException(422, 'A new owner must be created with the business. Do not provide owner_id.')
+    owner_name = (payload.owner_full_name or '').strip()
+    owner_email = (payload.owner_email or '').strip().lower()
+    if not owner_name or not owner_email or not payload.owner_password:
+        raise HTTPException(422, 'Owner full name, email and password are required when adding a new business')
+    if db.scalar(select(User).where(User.email == owner_email)) is not None:
+        raise HTTPException(409, 'A user with this owner email already exists')
+
     b=Business(slug=payload.slug.strip(), name=payload.name.strip(), google_review_pc_url=payload.google_review_pc_url, google_review_mob_url=payload.google_review_mob_url)
     _apply(b,payload); db.add(b); db.flush(); _replace_social(db,b,payload.social_links)
-    if owner: owner.business_id=b.id
+    owner = User(
+        email=owner_email,
+        password_hash=hash_password(payload.owner_password),
+        full_name=owner_name,
+        role='BUSINESS_OWNER',
+        business_id=b.id,
+        is_active=True,
+    )
+    db.add(owner)
     BillingService.subscription(db,b.id)
     db.commit(); db.refresh(b)
     return _item(db,b)
