@@ -8,6 +8,7 @@ from backend.app.db.database import get_db
 from backend.app.models.business import Business
 from backend.app.models.complaint import LocalComplaint
 from backend.app.models.generated_review import GeneratedPositiveReview
+from backend.app.models.fallback_review_comment import FallbackReviewComment
 from backend.app.models.social_link import SocialLink
 from backend.app.models.subscription_plan import SubscriptionPlan
 from backend.app.models.user import User
@@ -126,6 +127,27 @@ def create_business(payload: AdminBusinessCreate, _admin: User = Depends(require
         is_active=True,
     )
     db.add(owner)
+
+    # Give every new business the standard fallback review comment pool.
+    # The comments are copied from the canonical ReviewAgentAI business so
+    # positive ratings never fail simply because a new business has no
+    # business-specific fallback comments yet.
+    canonical_id = db.scalar(select(Business.id).where(Business.slug == 'reviewagentai'))
+    if canonical_id is not None:
+        templates = db.scalars(
+            select(FallbackReviewComment)
+            .where(FallbackReviewComment.business_id == canonical_id)
+            .order_by(FallbackReviewComment.rating, FallbackReviewComment.display_order, FallbackReviewComment.id)
+        ).all()
+        for template in templates:
+            db.add(FallbackReviewComment(
+                business_id=b.id,
+                rating=template.rating,
+                comment=template.comment,
+                display_order=template.display_order,
+                enabled=template.enabled,
+            ))
+
     BillingService.subscription(db,b.id)
     db.commit(); db.refresh(b)
     return _item(db,b)

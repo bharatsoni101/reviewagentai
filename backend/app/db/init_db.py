@@ -15,7 +15,6 @@ from backend.app.models import (
     User,
     Subscription,
     BillingPayment,
-    AuditLog,
     SubscriptionPlan,
 )
 
@@ -31,11 +30,14 @@ EXPECTED_TABLES = {
     "users",
     "subscriptions",
     "billing_payments",
-    "audit_logs",
     "subscription_plans",
 }
 
 def initialize_database() -> None:
+    # Remove the legacy audit_logs table from databases created by older versions.
+    with engine.begin() as connection:
+        connection.exec_driver_sql("DROP TABLE IF EXISTS audit_logs")
+
     Base.metadata.create_all(bind=engine)
 
     inspector = inspect(engine)

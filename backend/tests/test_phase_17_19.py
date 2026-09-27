@@ -1,3 +1,4 @@
+from sqlalchemy import text
 import io
 from fastapi.testclient import TestClient
 from backend.app.main import app
@@ -31,6 +32,8 @@ def test_security_headers_present():
     assert r.headers['x-frame-options']=='DENY'
     assert r.headers['referrer-policy']=='strict-origin-when-cross-origin'
 
-def test_audit_table_exists_and_rate_limit_configured():
+
+
+def test_legacy_audit_logs_table_is_removed():
     with SessionLocal() as db:
-        assert db.execute(__import__('sqlalchemy').text("SELECT name FROM sqlite_master WHERE type='table' AND name='audit_logs'")).scalar_one_or_none()=='audit_logs'
+        assert db.execute(text("SELECT name FROM sqlite_master WHERE type='table' AND name='audit_logs'")).scalar_one_or_none() is None

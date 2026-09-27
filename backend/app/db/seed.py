@@ -203,6 +203,13 @@ def seed_demo_data() -> None:
         _seed_plans(db)
         _seed_business(db, REVIEWAGENTAI_BUSINESS)
         _seed_business(db, LEGACY_DEMO_BUSINESS)
+
+        # Keep the standard fallback pool available to every business.
+        # Existing/custom business-specific comments are normalized to the
+        # standard pool so new and existing businesses behave consistently.
+        for business in db.scalars(select(Business).order_by(Business.id)).all():
+            _seed_fallback_comments(db, business)
+
         if settings.demo_auth_seed:
             _seed_users(db)
         db.commit()

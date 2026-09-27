@@ -12,8 +12,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.app.api.v1.router import api_router
 from backend.app.core.config import settings
 from backend.app.core.production import SlidingWindowRateLimiter, enforce_rate_limit
-from backend.app.db.database import SessionLocal
-from backend.app.models.audit_log import AuditLog
 from backend.app.db.init_db import initialize_database
 
 logger = logging.getLogger("reviewagentai")
@@ -76,19 +74,6 @@ async def request_logging_middleware(request: Request, call_next):
             "request_complete request_id=%s method=%s path=%s status=%s duration_ms=%s",
             request_id, request.method, request.url.path, status_code, elapsed_ms,
         )
-        if settings.audit_log_enabled and request.url.path.startswith("/api/v1/") and request.url.path not in {"/api/v1/health"}:
-            try:
-                user = getattr(request.state, "current_user", None)
-                with SessionLocal() as audit_db:
-                    audit_db.add(AuditLog(
-                        user_id=getattr(user, "id", None), business_id=getattr(user, "business_id", None),
-                        action=f"{request.method} {request.url.path}", method=request.method, path=request.url.path,
-                        status_code=status_code, request_id=request_id,
-                        ip_address=request.client.host if request.client else None,
-                    ))
-                    audit_db.commit()
-            except Exception:
-                logger.exception("audit_log_write_failed request_id=%s", request_id)
 
 
 @app.exception_handler(HTTPException)

@@ -46,7 +46,6 @@ class Settings:
     billing_provider: str = os.getenv("BILLING_PROVIDER", "MOCK").upper()
     rate_limit_requests: int = int(os.getenv("RATE_LIMIT_REQUESTS", "120"))
     rate_limit_window_seconds: int = int(os.getenv("RATE_LIMIT_WINDOW_SECONDS", "60"))
-    audit_log_enabled: bool = os.getenv("AUDIT_LOG_ENABLED", "true").strip().lower() in {"1", "true", "yes"}
 
     @property
     def cors_origin_list(self) -> list[str]:

@@ -3,6 +3,7 @@ from backend.app.main import app
 from backend.app.db.database import SessionLocal
 from backend.app.models.user import User
 from backend.app.models.business import Business
+from backend.app.models.fallback_review_comment import FallbackReviewComment
 from backend.app.core.security import hash_password
 
 def auth(client, email, password):
@@ -43,6 +44,9 @@ def test_admin_can_create_update_and_toggle_business():
         with SessionLocal() as db:
             created_owner=db.query(User).filter_by(email=unique_email).first()
             assert created_owner is not None and created_owner.business_id==bid and created_owner.role=='BUSINESS_OWNER'
+            fallback_comments=db.query(FallbackReviewComment).filter_by(business_id=bid, enabled=True).all()
+            assert len(fallback_comments) == 6
+            assert {row.rating for row in fallback_comments} == {4, 5}
         owner_login=client.post('/api/v1/auth/login',json={'email':unique_email,'password':'Phase20@12345'})
         assert owner_login.status_code==200, owner_login.text
         assert owner_login.json()['user']['business_id']==bid

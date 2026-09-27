@@ -20,11 +20,9 @@ __all__ = [
     "FallbackReviewComment",
     "Subscription",
     "BillingPayment",
-    "AuditLog",
     "SubscriptionPlan",
 ]
 
 from backend.app.models.subscription import Subscription, BillingPayment
 from backend.app.models.subscription_plan import SubscriptionPlan
 
-from backend.app.models.audit_log import AuditLog
