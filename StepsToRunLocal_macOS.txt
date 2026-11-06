@@ -1,0 +1,411 @@
+reviewagentai - Steps to Run Locally (macOS)
+
+These instructions are for macOS using Terminal and the default zsh
+shell. Run commands from the indicated project directory. Replace the
+example project path with the actual location of your reviewagentai
+folder.
+
+1. Open Terminal and go to the project folder
+
+Example (if the project is in your home directory):
+
+cd ~/Projects/reviewagentai
+
+If your project is somewhere else, use its actual path. You can also
+type “cd” (including the space) and drag the project folder into
+Terminal.
+
+2. Check the required tools
+
+Check that Python 3, Node.js, and npm are installed:
+
+python3 –version node –version npm –version
+
+The project uses Python, FastAPI, and a Vite-based frontend. If a
+command is not found, install the relevant tool before continuing. On
+macOS, you can install Python 3 and Node.js from their official
+installers or with Homebrew.
+
+If macOS asks for the Xcode Command Line Tools when installing/building
+packages, follow the macOS prompt to install them.
+
+3. Create the Python virtual environment (.venv)
+
+From the project root, if .venv does not already exist:
+
+% python3 -m venv .venv
+
+4. Activate .venv
+
+Run:
+
+% source .venv/bin/activate
+
+You should see (.venv) at the beginning of the Terminal prompt.
+
+Whenever you open a new Terminal window for backend work or tests, go to
+the project root and activate the environment again.
+
+5. Install requirements.txt
+
+With (.venv) active, from the project root:
+
+% python -m pip install –upgrade pip 
+% python -m pip install -r requirements.txt
+
+6. Add the Groq API key
+
+Create or update the .env file in the project root. For example, open it
+with:
+
+nano .env
+
+Add or update these values (replace the placeholder with your own Groq
+API key):
+
+APP_ENV=development DATABASE_URL=sqlite:///./reviewagentai.db
+CORS_ORIGINS=http://localhost:5173 GROQ_API_KEY=YOUR_GROQ_API_KEY
+GROQ_MODEL=openai/gpt-oss-120b REVIEW_SESSION_TIMEOUT_MINUTES=30
+
+Save in nano with Control+O, press Enter, then Control+X.
+
+Never commit .env to Git and never share the API key in chat,
+screenshots, logs, or source control. Confirm that .env is covered by
+.gitignore.
+
+7. Test the Groq API key and model
+
+Make sure TestGroq.py is in the project root, then run:
+
+%python TestGroq.py
+
+A successful result should contain:
+
+RESULT: SUCCESS - Groq API request completed
+
+If the result is FAILED, read the diagnosis. In particular, a
+model_not_found error means GROQ_MODEL is invalid or unavailable; it
+does not necessarily mean the API key is invalid.
+
+8. Reset the local SQLite database when schema/seed changes are made
+
+reviewagentai does not use Alembic. During development, delete the local
+DB and let the application recreate tables and seed data:
+
+rm -f ./reviewagentai.db
+
+Warning: this deletes the local database and its data. Back it up first
+if you need to keep any local records.
+
+9. Start the FastAPI backend
+
+From the project root, with .venv active:
+
+%uvicorn backend.app.main:app --reload
+
+Backend: http://127.0.0.1:8000
+
+Swagger: http://127.0.0.1:8000/docs
+
+Keep this Terminal window running while using the application.
+
+10. Run backend tests
+
+Open a second Terminal window. Go to the project root, activate the
+virtual environment, and run:
+
+cd ~/Projects/reviewagentai source .venv/bin/activate pytest -q
+
+Replace ~/Projects/reviewagentai with your actual project path if
+different.
+
+11. Positive review API input
+
+POST /api/v1/reviews/session/{session_id}/positive-reviews
+
+At least one checkbox or the customer comment is required.
+
+Example request body:
+
+{ “professional_staff”: true, “reliable_service”: false,
+“good_ambiance”: true, “affordable_pricing”: false, “customer_comment”:
+“Food was fresh and service was quick” }
+
+The API searches the business’s database fallback review comments and
+selects the top 3 relevant comments. Fallback comments are complete
+comments and do not contain {customer_input} or any other runtime
+replacement placeholder.
+
+If PreferAIComments is true, Groq uses the selected preferences,
+optional customer comment, and the matched fallback comments to produce
+3 natural review options. If Groq fails, the top 3 matched database
+comments are still returned with generation_source=fallback.
+
+If PreferAIComments is false, Groq is not called and the top 3 matched
+database comments are returned with generation_source=fallback.
+
+12. Restart the backend after .env changes
+
+If GROQ_API_KEY or GROQ_MODEL is changed, stop the running uvicorn
+process with Control+C, then start it again:
+
+uvicorn backend.app.main:app –reload
+
+This allows the application to load the updated environment values.
+
+13. Google Review PC/Mobile/Tablet URL behavior
+
+The Business table stores two Google review URLs:
+
+-   google_review_pc_url -> desktop/laptop browsers
+-   google_review_mob_url -> mobile phones and tablets
+
+For the seeded reviewagentai business, the mobile URL is:
+https://g.page/r/CQXyLImX75mfEBM/review
+
+The Google review selection API detects the browser User-Agent:
+
+Desktop / laptop: returns google_review_pc_url
+
+Mobile phone: returns google_review_mob_url
+
+Tablet (iPad / Android tablet): returns google_review_mob_url
+
+Unknown or missing User-Agent: defaults to google_review_mob_url
+
+The API response also includes the configured PC/mobile URLs, the
+selected review URL, and device_type.
+
+Example desktop test header (macOS desktop browser): User-Agent:
+Mozilla/5.0 (Macintosh; Intel Mac OS X 14_0) AppleWebKit/605.1.15
+(KHTML, like Gecko) Version/17.0 Safari/605.1.15
+
+Example mobile test header: User-Agent: Mozilla/5.0 (iPhone; CPU iPhone
+OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Mobile/15E148 Safari/604.1
+
+Example tablet test header: User-Agent: Mozilla/5.0 (Linux; Android 14;
+SM-X800) AppleWebKit/537.36 Chrome/140 Safari/537.36
+
+14. Reset database after Google URL schema changes
+
+Because reviewagentai does not use Alembic, delete the local SQLite
+database when applying this schema change:
+
+rm -f ./reviewagentai.db
+
+Then restart the backend so Base.metadata.create_all() recreates the
+database and the seed data creates the new PC/mobile Google review URL
+columns.
+
+Warning: this deletes local database data. Back it up first if needed.
+
+15. PHASE 3.12 BACKEND HARDENING
+
+This version adds session ownership for generated reviews, standardized
+API error codes, safe request IDs/logging, CORS checks, AI rate
+limiting, and database constraints/indexes.
+
+Because this project does NOT use Alembic, reset the SQLite database
+once after replacing the code:
+
+rm -f ./reviewagentai.db
+
+Then start the backend from the project root with .venv active:
+
+uvicorn backend.app.main:app –reload
+
+AI rate-limit settings in .env are optional:
+
+AI_RATE_LIMIT_REQUESTS=10 AI_RATE_LIMIT_WINDOW_SECONDS=60
+
+Run the full test suite:
+
+pytest -q
+
+16. PHASE 4.3-4.13 FRONTEND TESTING
+
+Use two Terminal windows: one for the backend and one for the frontend.
+
+A. Backend Terminal From the project root:
+
+cd ~/Projects/reviewagentai source .venv/bin/activate uvicorn
+backend.app.main:app –reload
+
+B. Frontend Terminal Open a second Terminal window:
+
+cd ~/Projects/reviewagentai/frontend 
+
+% npm install 
+% npm run dev
+
+Replace the example project path if your project is stored elsewhere.
+
+17. Open the customer experience
+
+http://localhost:5173/r/reviewagentai
+
+18. NFC test
+
+http://localhost:5173/r/reviewagentai?source=nfc
+
+19. QR test
+
+http://localhost:5173/r/reviewagentai?source=qr
+
+20. Positive flow test
+
+Landing -> Share your experience -> 4 or 5 stars -> choose at least one
+preference and/or comment -> Create review suggestions -> edit/select a
+suggestion -> Copy & Open Google.
+
+Confirm the text is copied and Google opens. The app must not submit the
+Google review automatically.
+
+21. Negative/private flow test
+√
+Landing -> Share your experience -> 1, 2, or 3 stars -> enter at least 3
+characters -> Send private feedback -> confirm the
+acknowledgement/success screen.
+
+Confirm no Google page is opened.
+
+22. Validation tests
+
+Try creating positive suggestions with no checkbox and no comment. The
+UI must block submission.
+
+Try empty private feedback. The UI must block submission.
+
+23. Error tests
+
+Open:
+
+http://localhost:5173/r/not-a-real-business
+
+Confirm a friendly error with Try again.
+
+Stop the backend and reload a customer page to verify the network error
+state.
+
+24. Session/resume test
+
+Start a flow, refresh the page, and confirm the active session resumes
+from its backend flow status instead of creating an unnecessary new
+session.
+
+25. Expired-session test
+
+If a session is expired by backend timeout, reload and confirm the UI
+asks the customer to start again.
+
+26. Social test
+
+Click each enabled social link. The external page should open and the
+SOCIAL_LINK_CLICKED event should be attempted in the background.
+
+27. Responsive test
+
+Use Chrome DevTools device emulation for iPhone/Android/tablet and
+desktop. Confirm buttons are easy to tap, cards fit the screen,
+textareas are usable, and no horizontal scrolling occurs.
+
+28. Clipboard failure test
+
+In a browser/privacy context where clipboard access is denied, Copy &
+Open Google must show a manual-copy message and must not open Google.
+
+29. Frontend tests
+
+Open a Terminal window and run:
+
+cd ~/Projects/reviewagentai/frontend npm test
+
+30. Frontend production build
+
+From the frontend directory:
+
+npm run build
+
+31. Backend regression test
+
+From the project root, with .venv active:
+
+cd ~/Projects/reviewagentai source .venv/bin/activate pytest -q
+
+32. PHASE 4 UI DESIGN SYSTEM
+
+The frontend uses the selected Modern SaaS / Premium design system. Keep
+future customer-facing UI changes consistent with the existing visual
+language: soft gray/white backgrounds, deep navy/indigo primary actions,
+blue/purple accents, white rounded cards, subtle gradients/shadows,
+large touch targets, prominent stars, and responsive mobile-first
+layouts.
+
+For frontend changes, from the frontend directory:
+
+cd ~/Projects/reviewagentai/frontend npm install npm run dev npm test
+npm run build
+
+33. PHASE 12 AUTHENTICATION QUICK TEST
+
+1.  Ensure DEMO_AUTH_SEED=true in your local environment.
+
+2.  Start the backend from the project root (with .venv active):
+
+    uvicorn backend.app.main:app –reload
+
+3.  Start the frontend in a second Terminal window:
+
+    cd ~/Projects/reviewagentai/frontend npm install npm run dev
+
+4.  Open: http://localhost:5173/login
+
+5.  Admin demo: admin@reviewagentai.local / Admin@12345
+
+6.  Business owner demo: owner@reviewagentai.local / Owner@12345
+
+7.  After login, /account shows the authenticated role and linked
+    business.
+
+8.  API docs: http://127.0.0.1:8000/docs
+
+9.  For production/shared environments set a long random AUTH_SECRET and
+    DEMO_AUTH_SEED=false.
+
+The demo credentials above are for local testing only. Do not use them
+in production or expose them in a public deployment.
+
+macOS QUICK REFERENCE
+
+Activate Python environment: source .venv/bin/activate
+
+Deactivate Python environment: deactivate
+
+Start backend: uvicorn backend.app.main:app –reload
+
+Run backend tests: pytest -q
+
+Start frontend: cd frontend npm run dev
+
+Run frontend tests: npm test
+
+Build frontend: npm run build
+
+Delete local SQLite database (this permanently deletes its local data):
+rm -f ./reviewagentai.db
+
+Stop a running backend/frontend process: Control+C
+
+IMPORTANT
+
+-   Run backend commands from the project root unless a step says
+    otherwise.
+-   Run frontend commands from the frontend directory.
+-   Keep the backend and frontend running in separate Terminal windows.
+-   Activate .venv again in every new Terminal window used for Python
+    commands.
+-   Do not commit .env or expose API keys.
+-   Back up reviewagentai.db before deleting it if you need its data.
+-   The URLs and API routes in this guide are the same application
+    endpoints; only the local operating-system commands and paths have
+    been adapted.
